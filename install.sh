@@ -2,7 +2,7 @@
 
 cur=~/dotfiles        # dotfiles directory
 old=~/dotfiles_old    # old dotfiles backup directory
-files="bashrc vimrc"
+files="vimrc gitconfig"
 
 mkdir -p $old
 cd $cur
