@@ -4,8 +4,8 @@ set rtp+=~/.vim/bundle/Vundle.vim
 call vundle#begin()
 
 Plugin 'VundleVim/Vundle.vim' " let Vundle manage Vundle
+Plugin 'Valloric/YouCompleteMe'
 Plugin 'klen/python-mode'
-Plugin 'davidhalter/jedi-vim'
 
 call vundle#end()
 
@@ -38,3 +38,5 @@ if has('mouse')
 	set mouse=v	" use mouse in visual mode
 endif
 
+
+let g:ycm_global_ycm_extra_conf = '~/.ycm_extra_conf.py'
