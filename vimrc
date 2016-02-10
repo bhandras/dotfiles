@@ -6,7 +6,6 @@ call vundle#begin()
 Plugin 'VundleVim/Vundle.vim' " let Vundle manage Vundle
 Plugin 'klen/python-mode'
 Plugin 'davidhalter/jedi-vim'
-Plugin 'freeo/vim-kalisi'
 
 call vundle#end()
 
@@ -14,7 +13,6 @@ filetype plugin indent on
 
 syntax enable
 set background=dark
-colorscheme kalisi
 set t_Co=256
 
 let g:pymode_rope = 0     " switch off rope
