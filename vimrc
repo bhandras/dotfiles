@@ -1,6 +1,8 @@
 set nocompatible
 filetype off
 set rtp+=~/.vim/bundle/Vundle.vim
+
+"Vundle
 call vundle#begin()
 
 Plugin 'VundleVim/Vundle.vim' "let Vundle manage Vundle
@@ -9,17 +11,21 @@ Plugin 'klen/python-mode'
 Plugin 'ctrlpvim/ctrlp.vim'
 Plugin 'fatih/vim-go'
 Plugin 'tomasr/molokai'
+Plugin 'octol/vim-cpp-enhanced-highlight'
 
 call vundle#end()
 
 filetype plugin indent on
 
-syntax enable
-set background=dark
-set t_Co=256
-colorscheme molokai
-let g:rehash256 = 1
+syntax enable "enable syntax highlighting
 
+set background=dark "dark
+set t_Co=256
+
+colorscheme molokai
+let g:rehash256 = 1 "molokai 256 color scheme
+
+"pymode
 let g:pymode_rope = 0 "switch off rope
 let g:pymode_folding = 0 "don't auto fold code
 
@@ -36,7 +42,6 @@ let g:go_highlight_structs = 1
 let g:go_highlight_interfaces = 1
 let g:go_highlight_operators = 1
 let g:go_highlight_build_constraints = 1
-
 
 "CtrlP
 let g:ctrlp_map = '<c-p>'
