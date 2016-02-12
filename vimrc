@@ -7,6 +7,8 @@ Plugin 'VundleVim/Vundle.vim' "let Vundle manage Vundle
 Plugin 'Valloric/YouCompleteMe'
 Plugin 'klen/python-mode'
 Plugin 'ctrlpvim/ctrlp.vim'
+Plugin 'fatih/vim-go'
+Plugin 'tomasr/molokai'
 
 call vundle#end()
 
@@ -15,6 +17,8 @@ filetype plugin indent on
 syntax enable
 set background=dark
 set t_Co=256
+colorscheme molokai
+let g:rehash256 = 1
 
 let g:pymode_rope = 0 "switch off rope
 let g:pymode_folding = 0 "don't auto fold code
@@ -24,6 +28,15 @@ let g:pymode_syntax_all = 1
 let g:pymode_syntax_indent_errors = 1
 let g:pymode_syntax_space_errors = 1
 let g:pymode_options_colorcolumn = 0
+
+"vim-go
+let g:go_highlight_functions = 1
+let g:go_highlight_methods = 1
+let g:go_highlight_structs = 1
+let g:go_highlight_interfaces = 1
+let g:go_highlight_operators = 1
+let g:go_highlight_build_constraints = 1
+
 
 "CtrlP
 let g:ctrlp_map = '<c-p>'
