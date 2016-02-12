@@ -12,6 +12,7 @@ Plugin 'ctrlpvim/ctrlp.vim'
 Plugin 'fatih/vim-go'
 Plugin 'tomasr/molokai'
 Plugin 'octol/vim-cpp-enhanced-highlight'
+Plugin 'vim-airline/vim-airline'
 
 call vundle#end()
 
@@ -24,6 +25,12 @@ set t_Co=256
 
 colorscheme molokai
 let g:rehash256 = 1 "molokai 256 color scheme
+hi VisualNOS ctermbg=240
+hi Visual ctermbg=238
+
+
+"vim-airline
+set laststatus=2 "status line always visible
 
 "pymode
 let g:pymode_rope = 0 "switch off rope
