@@ -30,17 +30,19 @@ hi Visual ctermbg=238
 
 
 "vim-airline
+let g:airline_powerline_fonts=1
 set laststatus=2 "status line always visible
 
 "pymode
 let g:pymode_rope = 0 "switch off rope
 let g:pymode_folding = 0 "don't auto fold code
+let g:pymode_rop_complete_on_dot = 1
 
 let g:pymode_syntax = 1
 let g:pymode_syntax_all = 1
 let g:pymode_syntax_indent_errors = 1
 let g:pymode_syntax_space_errors = 1
-let g:pymode_options_colorcolumn = 0
+let g:pymode_options_colorcolumn = 1
 
 "vim-go
 let g:go_highlight_functions = 1
@@ -74,6 +76,7 @@ set hlsearch "highlight all search pattern matches
 set ignorecase "case insensitive matching
 set smartcase "do not ignore case if search string contains uppercase characters
 set incsearch "match as you type
+let loaded_matchparen = 1 " Avoid the loading of match paren plugin
 
 "unset the 'last search ipattern' register by hitting return
 nnoremap <CR> :noh<CR><CR>
@@ -96,4 +99,14 @@ let g:clang_format#style_options = {
   \ "Standard" : "C++11",
   \ "BreakBeforeBraces" : "Attach"}
 
-map gd :YcmCompleter GoToDefinitionElseDeclaration<CR>
+map <F12> :YcmCompleter GoToDefinitionElseDeclaration<CR>
+
+function! NextErr()
+  try
+    execute 'lnext'
+  catch
+    execute 'lfirst'
+  endtry
+endfunction
+
+nnoremap <silent> <F8> :call NextErr()<CR>
