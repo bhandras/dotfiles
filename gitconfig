@@ -1,10 +1,15 @@
 [user]
-  email = bhandras@gmail.com
-	name = Andras Banki-Horvath
-
-[core]
-  editor = vim
-  pager = less -+F -+X
+	name = Andras Banki Horvath
+	email = bhandras@gmail.com
 
 [alias]
-  lg = log --graph --pretty=format:'%Cred%h%Creset -%C(yellow)%d%Creset %s %Cgreen(%cr) %C(bold blue)<%an>%Creset' --abbrev-commit --date=relative
+    lg = log --graph --pretty=format:'%Cred%h%Creset -%C(yellow)%d%Creset %s %Cgreen(%cr) %C(bold blue)<%an>%Creset' --abbrev-commit --date=relative
+[merge]
+  tool = bcomp
+[mergetool]
+  prompt = false
+[mergetool "bcomp"]
+  trustExitCode = true
+  cmd = "/usr/local/bin/bcomp" "$LOCAL" "$REMOTE" "$BASE" "$MERGED"
+[core]
+	editor = /usr/bin/vim
