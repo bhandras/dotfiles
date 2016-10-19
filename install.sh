@@ -1,6 +1,6 @@
 #!/bin/bash
 
-cur=~/github/dotfiles        # dotfiles directory
+cur=~/github/dotfiles # dotfiles directory
 old=~/dotfiles_old    # old dotfiles backup directory
 files="vimrc gitconfig"
 

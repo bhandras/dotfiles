@@ -1,98 +1,156 @@
-# Partially stolen from https://bitbucket.org/mblum/libgp/src/2537ea7329ef/.ycm_extra_conf.py
+# https://github.com/Valloric/ycmd/blob/master/cpp/ycm/.ycm_extra_conf.py
+# https://jonasdevlieghere.com/a-better-youcompleteme-config/
+
 import os
+import os.path
+import logging
 import ycm_core
 
-# These are the compilation flags that will be used in case there's no
-# compilation database set (by default, one is not set).
-# CHANGE THIS LIST OF FLAGS. YES, THIS IS THE DROID YOU HAVE BEEN LOOKING FOR.
-flags = [
+BASE_FLAGS = [
     '-Wall',
-    '-Wextra',
-    '-Werror',
-    '-Wno-long-long',
-    '-Wno-variadic-macros',
-    '-fexceptions',
-    # THIS IS IMPORTANT! Without a "-std=<something>" flag, clang won't know which
-    # language to use when compiling headers. So it will guess. Badly. So C++
-    # headers will be compiled as C headers. You don't want that so ALWAYS specify
-    # a "-std=<something>".
-    # For a C project, you would set this to something like 'c99' instead of
-    # 'c++11'.
-    '-std=c++14',
-    # ...and the same thing goes for the magic -x option which specifies the
-    # language that the files to be compiled are written in. This is mostly
-    # relevant for c++ headers.
-    # For a C project, you would set this to 'c' instead of 'c++'.
-    '-x', 'c++',
-    # This path will only work on OS X, but extra paths that don't exist are not
-    # harmful
-    '-isystem', '/System/Library/Frameworks/Python.framework/Headers',
-    '-isystem', '/usr/local/include',
-    '-I', 'include',
-    '-I.',
+    '-std=c++11',
+    '-xc++',
+    '-I/usr/lib/'
+    '-I/usr/include/'
 ]
 
-# Set this to the absolute path to the folder (NOT the file!) containing the
-# compile_commands.json file to use that instead of 'flags'. See here for
-# more details: http://clang.llvm.org/docs/JSONCompilationDatabase.html
-#
-# Most projects will NOT need to set this to anything; you can just change the
-# 'flags' list of compilation flags. Notice that YCM itself uses that approach.
-compilation_database_folder = ''
+SOURCE_EXTENSIONS = [
+    '.cpp',
+    '.cxx',
+    '.cc',
+    '.c',
+    '.m',
+    '.mm'
+]
 
-if compilation_database_folder:
-  database = ycm_core.CompilationDatabase( compilation_database_folder )
-else:
-  database = None
+HEADER_EXTENSIONS = [
+    '.h',
+    '.hxx',
+    '.hpp',
+    '.hh'
+]
+
+def is_header_file(filename):
+    extension = os.path.splitext(filename)[1]
+    return extension in HEADER_EXTENSIONS
+
+def get_some_file_from_database(dbpath):
+    import json
+    return json.load(open(dbpath))[0]["file"]
+
+def get_compilation_info_for_file(dbpath, database, filename):
+    if is_header_file(filename):
+        basename = os.path.splitext(filename)[0]
+        for extension in SOURCE_EXTENSIONS:
+            replacement_file = basename + extension
+            if os.path.exists(replacement_file):
+                compilation_info = database.GetCompilationInfoForFile(replacement_file)
+                if compilation_info.compiler_flags_:
+                    return compilation_info
+        return database.GetCompilationInfoForFile(
+            get_some_file_from_database(dbpath))
+    return database.GetCompilationInfoForFile(filename)
+
+def find_nearest(path, target):
+    candidate = os.path.join(path, target)
+    build_candidate = os.path.join(path, 'build', target)
+    if os.path.isfile(candidate) or os.path.isdir(candidate):
+        logging.info("Found nearest " + target + " at " + candidate)
+        return candidate
+    elif os.path.isfile(build_candidate) or os.path.isdir(build_candidate):
+        logging.info("Found nearest " + target + " at " + build_candidate)
+        return build_candidate
+    else:
+        parent = os.path.dirname(os.path.abspath(path))
+        if(parent == path):
+            raise RuntimeError("Could not find " + target)
+        return find_nearest(parent, target)
+
+def make_relative_paths_in_flags_absolute(flags, working_directory):
+    if not working_directory:
+        return list(flags)
+    new_flags = []
+    make_next_absolute = False
+    path_flags = [ '-isystem', '-I', '-iquote', '--sysroot=' ]
+    for flag in flags:
+        new_flag = flag
+
+        if make_next_absolute:
+            make_next_absolute = False
+            if not flag.startswith('/'):
+                new_flag = os.path.join(working_directory, flag)
+
+        for path_flag in path_flags:
+            if flag == path_flag:
+                make_next_absolute = True
+                break
+
+            if flag.startswith(path_flag):
+                path = flag[ len(path_flag): ]
+                new_flag = path_flag + os.path.join(working_directory, path)
+                break
+
+        if new_flag:
+            new_flags.append(new_flag)
+    return new_flags
 
 
-def DirectoryOfThisScript():
-  return os.path.dirname( os.path.abspath( __file__ ) )
+def flags_for_clang_complete(root):
+    try:
+        clang_complete_path = find_nearest(root, '.clang_complete')
+        clang_complete_flags = open(clang_complete_path, 'r').read().splitlines()
+        return clang_complete_flags
+    except:
+        return None
 
+def flags_for_include(root):
+    try:
+        include_path = find_nearest(root, 'include')
+        flags = []
+        for dirroot, dirnames, filenames in os.walk(include_path):
+            for dir_path in dirnames:
+                real_path = os.path.join(dirroot, dir_path)
+                flags = flags + ["-I" + real_path]
+        return flags
+    except:
+        return None
 
-def MakeRelativePathsInFlagsAbsolute( flags, working_directory ):
-  if not working_directory:
-    return list( flags )
-  new_flags = []
-  make_next_absolute = False
-  path_flags = [ '-isystem', '-I', '-iquote', '--sysroot=' ]
-  for flag in flags:
-    new_flag = flag
+def flags_for_compilation_database(root, filename):
+    try:
+        compilation_db_path = find_nearest(root, 'compile_commands.json')
+        compilation_db_dir = os.path.dirname(compilation_db_path)
+        logging.info("Set compilation database directory to " + compilation_db_dir)
+        compilation_db = ycm_core.CompilationDatabase(compilation_db_dir)
+        if not compilation_db:
+            logging.info("Compilation database file found but unable to load")
+            return None
+        compilation_info = get_compilation_info_for_file(
+            compilation_db_path, compilation_db, filename)
+        if not compilation_info:
+            logging.info("No compilation info for " + filename + " in compilation database")
+            return None
+        return make_relative_paths_in_flags_absolute(
+            compilation_info.compiler_flags_,
+            compilation_info.compiler_working_dir_)
+    except:
+        return None
 
-    if make_next_absolute:
-      make_next_absolute = False
-      if not flag.startswith( '/' ):
-        new_flag = os.path.join( working_directory, flag )
+def flags_for_file(filename):
+    root = os.path.realpath(filename)
+    compilation_db_flags = flags_for_compilation_database(root, filename)
+    if compilation_db_flags:
+        final_flags = compilation_db_flags
+    else:
+        final_flags = BASE_FLAGS
+        clang_flags = flags_for_clang_complete(root)
+        if clang_flags:
+            final_flags = final_flags + clang_flags
+        include_flags = flags_for_include(root)
+        if include_flags:
+            final_flags = final_flags + include_flags
+    return {
+        'flags': final_flags,
+        'do_cache': True
+    }
 
-    for path_flag in path_flags:
-      if flag == path_flag:
-        make_next_absolute = True
-        break
-
-      if flag.startswith( path_flag ):
-        path = flag[ len( path_flag ): ]
-        new_flag = path_flag + os.path.join( working_directory, path )
-        break
-
-    if new_flag:
-      new_flags.append( new_flag )
-  return new_flags
-
-
-def FlagsForFile( filename ):
-  if database:
-    # Bear in mind that compilation_info.compiler_flags_ does NOT return a
-    # python list, but a "list-like" StringVec object
-    compilation_info = database.GetCompilationInfoForFile( filename )
-    final_flags = MakeRelativePathsInFlagsAbsolute(
-      compilation_info.compiler_flags_,
-      compilation_info.compiler_working_dir_ )
-  else:
-    # relative_to = DirectoryOfThisScript()
-    relative_to = os.path.dirname(os.path.abspath(filename))
-    final_flags = MakeRelativePathsInFlagsAbsolute( flags, relative_to )
-
-  return {
-    'flags': final_flags,
-    'do_cache': True
-  }
+FlagsForFile = flags_for_file
