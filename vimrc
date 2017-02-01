@@ -22,6 +22,9 @@ syntax enable "enable syntax highlighting
 set splitbelow
 set splitright
 
+" delete current selection into 'blackhole' register and paste
+vmap r "_dP
+
 "split navigations
 nnoremap <C-J> <C-W><C-J>
 nnoremap <C-K> <C-W><C-K>
@@ -44,7 +47,7 @@ hi VisualNOS ctermbg=240
 hi Visual ctermbg=238
 nnoremap <C-Left> <PageUp>
 nnoremap <C-Right> <PageDown>
-map <leader>dwv :Vn %<CR>
+
 "vim-airline
 let g:airline_powerline_fonts=1
 set laststatus=2 "status line always visible
@@ -52,12 +55,12 @@ let python_highlight_all=1
 
 syntax on proper PEP8 Python indentation settings
 au BufNewFile,BufRead *.py
-    \ set tabstop=4
-    \ set softtabstop=4
-    \ set shiftwidth=4
-    \ set textwidth=79
-    \ set expandtab
-    \ set autoindent
+    \ set tabstop=4 |
+    \ set softtabstop=4 |
+    \ set shiftwidth=4 |
+    \ set textwidth=79 |
+    \ set expandtab |
+    \ set autoindent |
     \ set fileformat=unix
 
 "vim-go
@@ -92,7 +95,6 @@ set hlsearch "highlight all search pattern matches
 set ignorecase "case insensitive matching
 set smartcase "do not ignore case if search string contains uppercase characters
 set incsearch "match as you type
-let loaded_matchparen = 1 " Avoid the loading of match paren plugin
 set clipboard=unnamed
 
 "unset the 'last search ipattern' register by hitting return
@@ -118,7 +120,7 @@ let g:clang_format#style_options = {
   \ "Standard" : "C++11",
   \ "BreakBeforeBraces" : "Attach"}
 
-map <leader>g  :YcmCompleter GoToDefinitionElseDeclaration<CR>
+map <leader>g :YcmCompleter GoToDefinitionElseDeclaration<CR>
 
 function! NextErr()
   try
@@ -129,3 +131,5 @@ function! NextErr()
 endfunction
 
 nnoremap <silent> <F8> :call NextErr()<CR>
+
+autocmd FileType python nnoremap <leader>y :0,$!yapf<Cr><C-o>
