@@ -8,9 +8,11 @@ call vundle#begin()
 Plugin 'VundleVim/Vundle.vim' "let Vundle manage Vundle
 Plugin 'Valloric/YouCompleteMe'
 Plugin 'ctrlpvim/ctrlp.vim'
+Plugin 'fatih/vim-go'
 Plugin 'tomasr/molokai'
 Plugin 'octol/vim-cpp-enhanced-highlight'
 Plugin 'vim-airline/vim-airline'
+Plugin 'vim-airline/vim-airline-themes'
 Plugin 'vim-scripts/indentpython.vim'
 
 call vundle#end()
@@ -50,15 +52,16 @@ nnoremap <C-Right> <PageDown>
 
 "vim-airline
 let g:airline_powerline_fonts=1
+let g:airline_theme='simple'
 set laststatus=2 "status line always visible
-let python_highlight_all=1
+
+set colorcolumn=80
 
 syntax on proper PEP8 Python indentation settings
 au BufNewFile,BufRead *.py
     \ set tabstop=4 |
     \ set softtabstop=4 |
     \ set shiftwidth=4 |
-    \ set textwidth=79 |
     \ set expandtab |
     \ set autoindent |
     \ set fileformat=unix
@@ -82,6 +85,7 @@ let g:ctrlp_custom_ignore = {
       \ 'link': 'some_bad_symbolic_links',
       \ }
 
+set listchars=eol:¬,tab:>·,trail:~,extends:>,precedes:<,space:␣
 set shiftwidth=2 "spaces for autoindents
 set tabstop=2	"number of spaces a tab counts for
 set expandtab "turn tabs to spaces
@@ -105,7 +109,8 @@ if has('mouse')
 endif
 
 "YouCompleteMe
-let g:ycm_global_ycm_extra_conf = '~/.ycm_extra_conf.py'
+let g:ycm_confirm_extra_conf = 0
+let g:ycm_global_ycm_extra_conf = '.ycm_extra_conf.py'
 let g:ycm_autoclose_preview_window_after_completion = 1
 let g:ycm_key_invoke_completion = '<C-Space>'
 let g:ycm_enable_diagnostic_signs = 0
