@@ -20,5 +20,4 @@ alias cdp='cd $HOME/stuff/personal'
 alias cdw='cd $HOME/stuff/work'
 alias cdg='cd $GOPATH/src'
 
-
-export PATH="$PATH:$HOME/.rvm/bin" # Add RVM to PATH for scripting
+[ -f ~/.fzf.bash ] && source ~/.fzf.bash
