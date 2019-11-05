@@ -6,12 +6,15 @@ call plug#begin('~/.nvim/plugged')
  Plug 'vim-airline/vim-airline'
  Plug 'vim-airline/vim-airline-themes'
  Plug 'ctrlpvim/ctrlp.vim'
+ Plug 'fatih/vim-go'
  Plug 'autozimu/LanguageClient-neovim', {
     \ 'branch': 'next',
     \ 'do': 'bash install.sh',
     \ }
  Plug 'Shougo/deoplete.nvim', { 'do': ':UpdateRemotePlugins' }
  Plug 'Shougo/echodoc.vim'
+ Plug 'scrooloose/nerdtree'
+ Plug 'liuchengxu/vista.vim'
 call plug#end()
 
 let g:deoplete#enable_at_startup = 1
@@ -31,14 +34,17 @@ let g:LanguageClient_serverCommands = {
     \ 'python': ['pyls'],
     \ }
 
+let g:go_def_mapping_enabled = 0
+
 " Run gofmt and goimports on save
 autocmd BufWritePre *.go :call LanguageClient#textDocument_formatting_sync()
 
 function SetLSPShortcuts()
-  nnoremap <leader>l :call LanguageClient_contextMenu()<CR>
-  nnoremap <leader>gd :call LanguageClient#textDocument_definition()<CR>
-  nnoremap <leader>gx :call LanguageClient#textDocument_references()<CR>
-  nnoremap <leader>gh :call LanguageClient#textDocument_hover()<CR>
+  nnoremap <silent> <leader>l :call LanguageClient_contextMenu()<CR>
+  nnoremap <silent> gd :call LanguageClient#textDocument_definition()<CR>
+  nnoremap <silent> gx :call LanguageClient#textDocument_references()<CR>
+  nnoremap <silent> gh :call LanguageClient#textDocument_hover()<CR>
+  nnoremap <silent> gs :call LanguageClient_textDocument_documentSymbol()<CR>
 endfunction()
 
 augroup LSP
@@ -102,7 +108,7 @@ nnoremap <CR> :noh<CR><CR>
 set clipboard=unnamedplus
 
 " Set list chars (usage :set list/:set nolist)
-set list listchars=tab:»\ ,trail:°
+" set list listchars=tab:»\ ,trail:°
 
 " Allow multiple paste
 xnoremap p pgvy
@@ -124,6 +130,8 @@ nmap <leader>8 <Plug>AirlineSelectTab8
 nmap <leader>9 <Plug>AirlineSelectTab9
 nmap <leader>c :bprevious<CR>
 nmap <leader>v :bnext<CR>
+
+map <leader>e :NERDTreeToggle<CR>
 
 nnoremap \l :BLines<CR>
 nnoremap <leader>t :BTags<CR>

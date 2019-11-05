@@ -1,15 +1,21 @@
 [user]
-	name = Andras Banki Horvath
+	name = Andras Banki-Horvath
 	email = bhandras@gmail.com
 
 [alias]
     lg = log --graph --pretty=format:'%Cred%h%Creset -%C(yellow)%d%Creset %s %Cgreen(%cr) %C(bold blue)<%an>%Creset' --abbrev-commit --date=relative
+[diff]
+  tool = meld
+[difftool]
+  prompt = false
+[difftool "meld"]
+  cmd = /usr/bin/meld "$LOCAL" "$REMOTE"
 [merge]
-  tool = bcomp
+  tool = meld
 [mergetool]
   prompt = false
-[mergetool "bcomp"]
+[mergetool "meld"]
   trustExitCode = true
-  cmd = "/usr/local/bin/bcomp" "$LOCAL" "$REMOTE" "$BASE" "$MERGED"
+  cmd = /usr/bin/meld "$LOCAL" "$BASE" "$REMOTE" --output "$MERGED"
 [core]
 	editor = /usr/bin/vim
