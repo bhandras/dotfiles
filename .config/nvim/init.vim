@@ -1,12 +1,11 @@
 " Specify a directory for plugins
 call plug#begin('~/.nvim/plugged')
- Plug 'tomasr/molokai'
+ Plug 'morhetz/gruvbox'
  Plug 'junegunn/fzf', { 'dir': '~/.fzf', 'do': './install --all' }
  Plug 'junegunn/fzf.vim'
  Plug 'vim-airline/vim-airline'
  Plug 'vim-airline/vim-airline-themes'
  Plug 'ctrlpvim/ctrlp.vim'
- Plug 'fatih/vim-go'
  Plug 'autozimu/LanguageClient-neovim', {
     \ 'branch': 'next',
     \ 'do': 'bash install.sh',
@@ -14,7 +13,11 @@ call plug#begin('~/.nvim/plugged')
  Plug 'Shougo/deoplete.nvim', { 'do': ':UpdateRemotePlugins' }
  Plug 'Shougo/echodoc.vim'
  Plug 'scrooloose/nerdtree'
+ Plug 'fatih/vim-go', { 'do': ':GoUpdateBinaries' }
  Plug 'liuchengxu/vista.vim'
+ Plug 'tyru/current-func-info.vim'
+ Plug 'Shougo/echodoc.vim'
+ Plug 'jceb/vim-orgmode'
 call plug#end()
 
 let g:deoplete#enable_at_startup = 1
@@ -57,16 +60,20 @@ set signcolumn=yes
 
 " Map leader to ,
 let mapleader=','
+let maplocalleader="\<space>"
 
 " Enable mouse
 if has('mouse')
 	set mouse=a
 endif
 
-" Molokai 256 color scheme 
-colorscheme molokai
-set t_Co=256
-let g:rehash256 = 1
+" Gruvbox
+let g:gruvbox_italic=1
+let g:gruvbox_invert_selection=0
+colorscheme gruvbox
+
+" NeoVim colors
+set termguicolors
 
 set background=dark
 " Display the ruler at 81 characters
@@ -88,8 +95,9 @@ set expandtab
 set autoindent
 set smartindent
 
-" Show line numbers
-set number
+" Show hybrid relative line numbers
+set nu rnu
+set numberwidth=2
 " Show file name in title bar
 set title 
 
@@ -104,8 +112,8 @@ set incsearch
 "unset the 'last search ipattern' register by hitting 'return'
 nnoremap <CR> :noh<CR><CR>
 
-" For OSX clipboard
-set clipboard=unnamedplus
+" clipboard
+set clipboard+=unnamed
 
 " Set list chars (usage :set list/:set nolist)
 " set list listchars=tab:»\ ,trail:°
@@ -114,10 +122,12 @@ set clipboard=unnamedplus
 xnoremap p pgvy
 
 " Airline
-let g:airline_theme='simple'
+let g:airline_theme='gruvbox'
 let g:airline#extensions#tabline#enabled = 1
 let g:airline#extensions#tabline#fnamemod = ':t'
 let g:airline#extensions#tabline#buffer_idx_mode = 1
+let g:airline#extensions#tagbar#flags = 'f'
+
 
 nmap <leader>1 <Plug>AirlineSelectTab1
 nmap <leader>2 <Plug>AirlineSelectTab2
@@ -143,3 +153,19 @@ filetype plugin indent on
 " Cursor shape in insert mode
 let &t_SI = "\e[6 q"
 let &t_EI = "\e[2 q"
+
+let &t_8f = "<Esc>[38;2;%lu;%lu;%lum"
+let &t_8b = "<Esc>[48;2;%lu;%lu;%lum"
+
+" show current function name
+nnoremap <leader>n :echo cfi#format("%s", "")<CR>
+
+nmap <silent> <A-Up> :wincmd k<CR>
+nmap <silent> <A-Down> :wincmd j<CR>
+nmap <silent> <A-Left> :wincmd h<CR>
+nmap <silent> <A-Right> :wincmd l<CR>
+nmap <silent> <C-s> :vert sb<CR>
+
+" persistent undo
+set undodir=~/.vim/undodir
+set undofile
