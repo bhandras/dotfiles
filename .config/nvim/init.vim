@@ -3,22 +3,29 @@ call plug#begin('~/.nvim/plugged')
  Plug 'morhetz/gruvbox'
  Plug 'junegunn/fzf', { 'dir': '~/.fzf', 'do': './install --all' }
  Plug 'junegunn/fzf.vim'
+ Plug 'junegunn/rainbow_parentheses.vim'
  Plug 'vim-airline/vim-airline'
  Plug 'vim-airline/vim-airline-themes'
- Plug 'ctrlpvim/ctrlp.vim'
- Plug 'autozimu/LanguageClient-neovim', {
-    \ 'branch': 'next',
-    \ 'do': 'bash install.sh',
-    \ }
+ Plug 'neovim/nvim-lsp'
  Plug 'Shougo/deoplete.nvim', { 'do': ':UpdateRemotePlugins' }
- Plug 'Shougo/echodoc.vim'
+ Plug 'Shougo/deoplete-lsp'
+ Plug 'Shougo/echodoc'
+
  Plug 'scrooloose/nerdtree'
  Plug 'fatih/vim-go', { 'do': ':GoUpdateBinaries' }
- Plug 'liuchengxu/vista.vim'
  Plug 'tyru/current-func-info.vim'
- Plug 'Shougo/echodoc.vim'
- Plug 'jceb/vim-orgmode'
+ Plug 'majutsushi/tagbar'
+ Plug 'tpope/vim-fugitive'
 call plug#end()
+
+" set up folding
+set foldmethod=indent
+set nofoldenable
+set foldlevel=99
+nnoremap <space> za
+
+" Open tagbar at the left
+let g:tagbar_left=1
 
 let g:deoplete#enable_at_startup = 1
 let g:deoplete#auto_complete_start_length = 1
@@ -30,24 +37,16 @@ set cmdheight=2
 let g:echodoc#enable_at_startup = 1
 let g:echodoc#type = 'signature'
 
-let g:LanguageClient_serverCommands = {
-    \ 'rust': ['rustup', 'run', 'nightly', 'rls'],
-    \ 'cpp': ['clangd'],
-    \ 'go': ['gopls'],
-    \ 'python': ['pyls'],
-    \ }
-
 let g:go_def_mapping_enabled = 0
 
-" Run gofmt and goimports on save
-autocmd BufWritePre *.go :call LanguageClient#textDocument_formatting_sync()
+lua require'nvim_lsp'.gopls.setup{}
 
 function SetLSPShortcuts()
-  nnoremap <silent> <leader>l :call LanguageClient_contextMenu()<CR>
-  nnoremap <silent> gd :call LanguageClient#textDocument_definition()<CR>
-  nnoremap <silent> gx :call LanguageClient#textDocument_references()<CR>
-  nnoremap <silent> gh :call LanguageClient#textDocument_hover()<CR>
-  nnoremap <silent> gs :call LanguageClient_textDocument_documentSymbol()<CR>
+  nnoremap <silent> gd    <cmd>lua vim.lsp.buf.definition()<CR>
+  nnoremap <silent> gh     <cmd>lua vim.lsp.buf.hover()<CR>
+  nnoremap <silent> <c-k> <cmd>lua vim.lsp.buf.signature_help()<CR>
+  nnoremap <silent> gx    <cmd>lua vim.lsp.buf.references()<CR>
+  nnoremap <silent> gF    <cmd>lua vim.lsp.buf.formatting()<CR>
 endfunction()
 
 augroup LSP
@@ -60,7 +59,7 @@ set signcolumn=yes
 
 " Map leader to ,
 let mapleader=','
-let maplocalleader="\<space>"
+" let maplocalleader="\<space>"
 
 " Enable mouse
 if has('mouse')
@@ -138,15 +137,15 @@ nmap <leader>6 <Plug>AirlineSelectTab6
 nmap <leader>7 <Plug>AirlineSelectTab7
 nmap <leader>8 <Plug>AirlineSelectTab8
 nmap <leader>9 <Plug>AirlineSelectTab9
-nmap <leader>c :bprevious<CR>
-nmap <leader>v :bnext<CR>
 
 map <leader>e :NERDTreeToggle<CR>
+map <leader>s :TagbarToggle<CR>
 
 nnoremap \l :BLines<CR>
 nnoremap <leader>t :BTags<CR>
-nnoremap <leader>b :CtrlPBuffer<CR>
+nnoremap <leader>b :Buffers<CR>
 nnoremap <leader>f :Files<CR>
+nnoremap <leader>c :Commits<CR>
 
 filetype plugin indent on
 
@@ -169,3 +168,10 @@ nmap <silent> <C-s> :vert sb<CR>
 " persistent undo
 set undodir=~/.vim/undodir
 set undofile
+
+"command! -bang -nargs=* BTags
+"  \  if &filetype == 'go'
+"  \|   call fzf#vim#buffer_tags(<q-args>, 'gotags -silent -sort '.shellescape(expand('%')), <bang>0)
+"  \| else
+"  \|   call fzf#vim#buffer_tags(<q-args>, <bang>0)
+"  \| endif
