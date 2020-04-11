@@ -1,0 +1,37 @@
+# order += "coin_market"
+order += "sysdata"
+order += "disk /"
+order += "volume_status"
+order += "backlight"
+order += "battery_level"
+order += "wifi"
+order += "clock"
+
+backlight {
+  device = "/sys/class/backlight/intel_backlight"
+  cache_timeout = 3
+}
+
+battery_level {
+  battery_id = 0
+  cache_timeout = 5
+  hide_seconds = True
+	notification = True
+	notify_low_level = True
+  blocks = ""
+	charging_character = ""
+  format = "{icon} {percent}% - {time_remaining}"
+  format_notify_charging = "charging"
+	format_notify_discharging = "discharging {percent}"
+}
+
+
+volume_status {
+  cache_timeout = 1
+  format = "  {percentage}%"
+  format_muted = "  muted"
+}
+
+wifi {
+  # format_up = "wlan1  %quality  %essid   %bitrate  %ip"
+}
