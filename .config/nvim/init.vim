@@ -6,9 +6,15 @@ call plug#begin('~/.nvim/plugged')
  Plug 'junegunn/rainbow_parentheses.vim'
  Plug 'vim-airline/vim-airline'
  Plug 'vim-airline/vim-airline-themes'
- Plug 'neovim/nvim-lsp'
+
+ Plug 'autozimu/LanguageClient-neovim', {
+    \ 'branch': 'next',
+    \ 'do': 'bash install.sh',
+    \ }
+
  Plug 'Shougo/deoplete.nvim', { 'do': ':UpdateRemotePlugins' }
- Plug 'Shougo/deoplete-lsp'
+ " Plug 'neovim/nvim-lsp'
+ " Plug 'Shougo/deoplete-lsp'
  Plug 'Shougo/echodoc'
 
  Plug 'scrooloose/nerdtree'
@@ -39,14 +45,28 @@ let g:echodoc#type = 'signature'
 
 let g:go_def_mapping_enabled = 0
 
-lua require'nvim_lsp'.gopls.setup{}
+
+" lua require'nvim_lsp'.gopls.setup{}
+
+let g:LanguageClient_serverCommands = {
+    \ 'rust': ['rustup', 'run', 'nightly', 'rls'],
+    \ 'cpp': ['clangd'],
+    \ 'go': ['gopls'],
+    \ 'python': ['pyls'],
+    \ }
 
 function SetLSPShortcuts()
-  nnoremap <silent> gd    <cmd>lua vim.lsp.buf.definition()<CR>
-  nnoremap <silent> gh     <cmd>lua vim.lsp.buf.hover()<CR>
-  nnoremap <silent> <c-k> <cmd>lua vim.lsp.buf.signature_help()<CR>
-  nnoremap <silent> gx    <cmd>lua vim.lsp.buf.references()<CR>
-  nnoremap <silent> gF    <cmd>lua vim.lsp.buf.formatting()<CR>
+  " nnoremap <silent> gd    <cmd>lua vim.lsp.buf.definition()<CR>
+  " nnoremap <silent> gh     <cmd>lua vim.lsp.buf.hover()<CR>
+  " nnoremap <silent> <c-k> <cmd>lua vim.lsp.buf.signature_help()<CR>
+  " nnoremap <silent> gx    <cmd>lua vim.lsp.buf.references()<CR>
+  " nnoremap <silent> gF    <cmd>lua vim.lsp.buf.formatting()<CR>
+
+  nnoremap <silent> <leader>l :call LanguageClient_contextMenu()<CR>
+  nnoremap <silent> gd :call LanguageClient#textDocument_definition()<CR>
+  nnoremap <silent> gx :call LanguageClient#textDocument_references()<CR>
+  nnoremap <silent> gh :call LanguageClient#textDocument_hover()<CR>
+  nnoremap <silent> gs :call LanguageClient_textDocument_documentSymbol()<CR>
 endfunction()
 
 augroup LSP
@@ -84,9 +104,9 @@ set ruler
 " Enable syntax highlighting
 syntax enable
 " Spaces for autoindents
-set shiftwidth=2
+set shiftwidth=4
 " Number of spaces a tab counts for
-set tabstop=2
+set tabstop=4
 " Turn tabs to spaces
 set expandtab
 
@@ -123,7 +143,7 @@ xnoremap p pgvy
 " Airline
 let g:airline_theme='gruvbox'
 let g:airline#extensions#tabline#enabled = 1
-let g:airline#extensions#tabline#fnamemod = ':t'
+let g:airline#extensions#tabline#fnamemod = ':p'
 let g:airline#extensions#tabline#buffer_idx_mode = 1
 let g:airline#extensions#tagbar#flags = 'f'
 
