@@ -22,6 +22,7 @@ call plug#begin('~/.nvim/plugged')
  Plug 'tyru/current-func-info.vim'
  Plug 'majutsushi/tagbar'
  Plug 'tpope/vim-fugitive'
+ Plug 'Valloric/MatchTagAlways'
 call plug#end()
 
 " set up folding
@@ -132,7 +133,7 @@ set incsearch
 nnoremap <CR> :noh<CR><CR>
 
 " clipboard
-set clipboard+=unnamed
+set clipboard=unnamedplus
 
 " Set list chars (usage :set list/:set nolist)
 " set list listchars=tab:»\ ,trail:°
