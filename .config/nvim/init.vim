@@ -1,7 +1,8 @@
 " Specify a directory for plugins
 call plug#begin('~/.nvim/plugged')
  Plug 'morhetz/gruvbox'
- Plug 'junegunn/fzf', { 'dir': '~/.fzf', 'do': './install --all' }
+ Plug 'NLKNguyen/papercolor-theme'
+ Plug 'junegunn/fzf', { 'do': { -> fzf#install() } }
  Plug 'junegunn/fzf.vim'
  Plug 'junegunn/rainbow_parentheses.vim'
  Plug 'vim-airline/vim-airline'
@@ -23,6 +24,8 @@ call plug#begin('~/.nvim/plugged')
  Plug 'majutsushi/tagbar'
  Plug 'tpope/vim-fugitive'
  Plug 'Valloric/MatchTagAlways'
+
+ Plug 'numirias/semshi', {'do': ':UpdateRemotePlugins'}
 call plug#end()
 
 " set up folding
@@ -35,7 +38,7 @@ nnoremap <space> za
 let g:tagbar_left=1
 
 let g:deoplete#enable_at_startup = 1
-let g:deoplete#auto_complete_start_length = 1
+" let g:deoplete#auto_complete_start_length = 1
 
 " Required for operations modifying multiple buffers like rename.
 set hidden
@@ -45,13 +48,21 @@ let g:echodoc#enable_at_startup = 1
 let g:echodoc#type = 'signature'
 
 let g:go_def_mapping_enabled = 0
+let g:go_highlight_types = 1
+" let g:go_highlight_fields = 1
+" let g:go_highlight_functions = 1
+let g:go_highlight_function_calls = 1
+let g:go_highlight_operators = 1
+let g:go_highlight_extra_types = 1
 
 
 " lua require'nvim_lsp'.gopls.setup{}
-
+let g:fzf_preview_window = 'right:50%'
+" let g:LanguageClient_fzfOptions = fzf#vim#with_preview().options
 let g:LanguageClient_serverCommands = {
-    \ 'rust': ['rustup', 'run', 'nightly', 'rls'],
+    \ 'rust': ['~/.cargo/bin/rustup', 'run', 'stable', 'rls'],
     \ 'cpp': ['clangd'],
+    \ 'c': ['clangd'],
     \ 'go': ['gopls'],
     \ 'python': ['pyls'],
     \ }
@@ -91,11 +102,13 @@ endif
 let g:gruvbox_italic=1
 let g:gruvbox_invert_selection=0
 colorscheme gruvbox
-
+set background=dark
+" colorscheme PaperColor
+" set background=light
+"
 " NeoVim colors
 set termguicolors
 
-set background=dark
 " Display the ruler at 81 characters
 set colorcolumn=81
 " Highlight the current line
@@ -107,7 +120,7 @@ syntax enable
 " Spaces for autoindents
 set shiftwidth=4
 " Number of spaces a tab counts for
-set tabstop=4
+set tabstop=8
 " Turn tabs to spaces
 set expandtab
 
@@ -196,3 +209,4 @@ set undofile
 "  \| else
 "  \|   call fzf#vim#buffer_tags(<q-args>, <bang>0)
 "  \| endif
+
