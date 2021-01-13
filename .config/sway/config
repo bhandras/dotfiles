@@ -5,14 +5,16 @@ set $gnome-schema org.gnome.desktop.interface
 
 exec_always {
     gsettings set $gnome-schema cursor-size 24
+    mako
 }
 
 
 # laptop screen
-output eDP-1 scale 1.5
+output eDP-1 scale 1.5 scale_filter smart
 
 # desktop screen
-output DP-2 scale 1.5
+output DP-2 scale 1.5 scale_filter smart
+output HDMI-A-1 scale 1.5 scale_filter smart
 
 # keyboard layout
 input * xkb_layout "gb,hu"
@@ -52,10 +54,11 @@ set $up k
 set $right l
 
 # Terminal emulator
-set $term /usr/bin/kitty
+set $term $HOME/.cargo/bin/alacritty
 
 # Application launcher
-set $menu dmenu_path | dmenu | xargs swaymsg exec --
+# set $menu dmenu_path | dmenu | xargs swaymsg exec --
+set $menu /usr/local/bin/rofi -show run
 
 # Screenshot to clipboard
 bindsym Print exec grim - | wl-copy
@@ -217,7 +220,7 @@ bar {
     # When the status_command prints a new line to stdout, swaybar updates.
     # The default just shows the current date and time.
     # status_command while date +'%Y-%m-%d %l:%M:%S %p'; do sleep 1; done
-    status_command ~/.local/bin/py3status --wm sway -s -c ~/.config/py3status/config -l ~/py3status_sway.log
+    status_command ~/.local/bin/py3status --wm sway -s -c ~/.config/py3status/config
     colors {
         statusline #ffffff
         background #323232
