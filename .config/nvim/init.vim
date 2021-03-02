@@ -26,6 +26,7 @@ call plug#begin('~/.nvim/plugged')
  Plug 'Valloric/MatchTagAlways'
 
  Plug 'numirias/semshi', {'do': ':UpdateRemotePlugins'}
+ " Plug 'sbdchd/neoformat'
 call plug#end()
 
 " set up folding
@@ -85,6 +86,13 @@ augroup LSP
   autocmd!
   autocmd FileType cpp,c,go,rust,python call SetLSPShortcuts()
 augroup END
+
+let g:neoformat_enabled_sql = ['pg_format']
+let g:neoformat_sql_sqlformat = {
+            \ 'exe': 'pg_format',
+            \ 'args': ['-'],
+            \ 'stdin': 1,
+            \ }
 
 " always show signcolumn
 set signcolumn=yes
@@ -180,6 +188,7 @@ nnoremap <leader>t :BTags<CR>
 nnoremap <leader>b :Buffers<CR>
 nnoremap <leader>f :Files<CR>
 nnoremap <leader>c :Commits<CR>
+" nnoremap <leader>nf :Neoformat<cr>
 
 filetype plugin indent on
 
