@@ -22,7 +22,6 @@ call plug#begin('~/.nvim/plugged')
  Plug 'fatih/vim-go', { 'do': ':GoUpdateBinaries' }
  Plug 'tyru/current-func-info.vim'
  Plug 'majutsushi/tagbar'
- Plug 'tpope/vim-fugitive'
  Plug 'Valloric/MatchTagAlways'
 
  Plug 'numirias/semshi', {'do': ':UpdateRemotePlugins'}
@@ -109,11 +108,11 @@ endif
 " Gruvbox
 let g:gruvbox_italic=1
 let g:gruvbox_invert_selection=0
-colorscheme gruvbox
-set background=dark
-" colorscheme PaperColor
-" set background=light
-"
+" colorscheme gruvbox
+" set background=dark
+colorscheme PaperColor
+set background=light
+
 " NeoVim colors
 set termguicolors
 
@@ -163,7 +162,8 @@ set clipboard=unnamedplus
 xnoremap p pgvy
 
 " Airline
-let g:airline_theme='gruvbox'
+" let g:airline_theme='gruvbox'
+let g:airline_theme='papercolor'
 let g:airline#extensions#tabline#enabled = 1
 let g:airline#extensions#tabline#fnamemod = ':p'
 let g:airline#extensions#tabline#buffer_idx_mode = 1
