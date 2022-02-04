@@ -23,6 +23,7 @@ call plug#begin('~/.nvim/plugged')
  Plug 'tyru/current-func-info.vim'
  Plug 'majutsushi/tagbar'
  Plug 'Valloric/MatchTagAlways'
+ Plug 'nvim-treesitter/nvim-treesitter', {'do': ':TSUpdate'}
 
  Plug 'numirias/semshi', {'do': ':UpdateRemotePlugins'}
  " Plug 'sbdchd/neoformat'
@@ -110,11 +111,14 @@ let g:gruvbox_italic=1
 let g:gruvbox_invert_selection=0
 " colorscheme gruvbox
 " set background=dark
-colorscheme PaperColor
-set background=light
 
 " NeoVim colors
 set termguicolors
+
+
+colorscheme PaperColor
+set background=light
+
 
 " Display the ruler at 81 characters
 set colorcolumn=81
