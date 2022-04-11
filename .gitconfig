@@ -1,0 +1,49 @@
+[user]
+	name = Andras Banki-Horvath
+	email = bhandras@gmail.com
+	signingkey = 094198D8
+
+[alias]
+    lg = log --graph --pretty=format:'%Cred%h%Creset -%C(yellow)%d%Creset %s %Cgreen(%cr) %C(bold blue)<%an>%Creset' --abbrev-commit --date=relative
+
+[merge]
+    tool = meld
+    conflictstyle = diff3
+
+[mergetool "meld"]
+    # cmd = meld
+    cmd = meld \"$LOCAL\" \"$BASE\" \"$REMOTE\" --output \"$MERGED\" --label \"MERGE (REMOTE BASE MY)\"
+    trustExitCode = false
+
+[mergetool]
+    # do not ask if we want to skip merge
+    prompt = false
+
+    # do not create backup *.orig files
+    keepBackup = false
+
+[diff]
+    tool = meld
+    colorMoved = default
+
+[difftool]
+    prompt = false
+
+[difftool "meld"]
+    cmd = meld "$LOCAL" "$REMOTE"
+
+[core]
+    pager = delta
+    editor = vim
+
+[interactive]
+    diffFilter = delta --color-only
+
+[delta]
+    navigate = true
+    side-by-side = true
+    light = true
+
+[url "ssh://git@github.com/"]
+    insteadOf = https://github.com/
+
