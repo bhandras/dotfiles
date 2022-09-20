@@ -1,0 +1,37 @@
+# fkill - kill processes - list only the ones you can kill
+fkill() {
+    local pid 
+    if [ "$UID" != "0" ]; then
+        pid=$(ps -f -u $UID | sed 1d | fzf -m | awk '{print $2}')
+    else
+        pid=$(ps -ef | sed 1d | fzf -m | awk '{print $2}')
+    fi  
+
+    if [ "x$pid" != "x" ]
+    then
+        echo $pid | xargs kill -${1:-9}
+    fi  
+}
+
+# flg - git commit browser
+flg() {
+  git log --color=always  --format="%C(auto)%h%d %s %C(black)%Cgreen%cr %Cblue[%an]" --no-merges "$@" |
+  fzf --ansi --no-sort --reverse --tiebreak=index --toggle-sort=\` \
+      --bind "ctrl-m:execute:
+            echo '{}' | grep -o '[a-f0-9]\{7\}' | head -1 |
+            xargs -I % sh -c \"git show --color=always % -- ':(exclude)go.sum' ':(exclude)*.pb.go'\""
+}
+
+# fd - local changes browser
+fd() {
+  git diff --name-only --relative |
+  fzf --ansi --preview "git diff --color=always $@ -- {-1}" --bind "ctrl-m:execute: git diff {1}"
+}
+
+# frg - interactive rg previews
+frg() {
+  if [ ! "$#" -gt 0 ]; then echo "Need a string to search for!"; return 1; fi
+  rg --files-with-matches --no-messages "$1" |
+  fzf --preview "highlight -O ansi -l {} 2> /dev/null | rg --colors 'match:bg:yellow' --ignore-case --pretty --context 10 '$1' || rg --ignore-case --pretty --context 10 '$1' {}"
+}
+

@@ -11,7 +11,6 @@
     conflictstyle = diff3
 
 [mergetool "meld"]
-    # cmd = meld
     cmd = meld \"$LOCAL\" \"$BASE\" \"$REMOTE\" --output \"$MERGED\" --label \"MERGE (REMOTE BASE MY)\"
     trustExitCode = false
 
@@ -33,11 +32,11 @@
     cmd = meld "$LOCAL" "$REMOTE"
 
 [core]
-    pager = delta
+    pager = env LESS="" delta --paging always
     editor = vim
 
 [interactive]
-    diffFilter = delta --color-only
+    diffFilter = env LESS="" delta --color-only --paging always
 
 [delta]
     navigate = true
