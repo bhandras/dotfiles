@@ -26,6 +26,8 @@ call plug#begin('~/.nvim/plugged')
  Plug 'nvim-treesitter/nvim-treesitter', {'do': ':TSUpdate'}
 
  Plug 'numirias/semshi', {'do': ':UpdateRemotePlugins'}
+ Plug 'vim-scripts/dbext.vim' 
+
  " Plug 'sbdchd/neoformat'
 call plug#end()
 
@@ -86,6 +88,9 @@ augroup LSP
   autocmd!
   autocmd FileType cpp,c,go,rust,python call SetLSPShortcuts()
 augroup END
+
+" Default to static completion for SQL
+let g:omni_sql_default_compl_type = 'syntax'
 
 let g:neoformat_enabled_sql = ['pg_format']
 let g:neoformat_sql_sqlformat = {
@@ -187,11 +192,22 @@ nmap <leader>9 <Plug>AirlineSelectTab9
 map <leader>e :NERDTreeToggle<CR>
 map <leader>s :TagbarToggle<CR>
 
+function! RipgrepFzf(query, fullscreen)
+  let command_fmt = 'rg --column --line-number --no-heading --color=always --smart-case -- %s || true'
+  let initial_command = printf(command_fmt, shellescape(a:query))
+  let reload_command = printf(command_fmt, '{q}')
+  let spec = {'options': ['--phony', '--query', a:query, '--bind', 'change:reload:'.reload_command]}
+  call fzf#vim#grep(initial_command, 1, fzf#vim#with_preview(spec), a:fullscreen)
+endfunction
+
+command! -nargs=* -bang RG call RipgrepFzf(<q-args>, <bang>0)
+
 nnoremap \l :BLines<CR>
 nnoremap <leader>t :BTags<CR>
 nnoremap <leader>b :Buffers<CR>
 nnoremap <leader>f :Files<CR>
 nnoremap <leader>c :Commits<CR>
+nnoremap <leader>g :RG<CR>
 " nnoremap <leader>nf :Neoformat<cr>
 
 filetype plugin indent on
