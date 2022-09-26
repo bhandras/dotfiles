@@ -96,9 +96,6 @@ return packer.startup(function(use)
     -- Syntax highlight.
     use {
         "nvim-treesitter/nvim-treesitter",
-        requires = {
-            "nvim-treesitter/nvim-treesitter-context",
-        },
         run = function()
             require('nvim-treesitter.install').update({ with_sync = true })
         end,
@@ -143,6 +140,19 @@ return packer.startup(function(use)
         event = { "BufReadPre" },
         config = function()
             require("config.lsp").setup()
+        end,
+    }
+
+    use {
+        "SmiteshP/nvim-navic",
+        wants = {
+            "nvim-web-devicons",
+        },
+        requires = {
+            "williamboman/mason-lspconfig.nvim",
+        },
+        config = function()
+            require("config.nvim-navic").setup()
         end,
     }
 

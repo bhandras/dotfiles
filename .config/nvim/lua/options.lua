@@ -61,8 +61,7 @@ vim.opt.sidescrolloff = 8
 
 vim.opt.shortmess:append "c"
 
--- remap <leader> to ','
-vim.cmd [[let mapleader=',']]
+vim.g.mapleader = ","                           -- remap <leader> to ','
 
 -- display the ruler at 81 characters
 vim.cmd [[set colorcolumn=81]]
@@ -107,6 +106,4 @@ keymap("n", "<leader>f", "<cmd>lua require('telescope.builtin').find_files()<cr>
 keymap("n", "<leader>g", "<cmd>lua require('telescope.builtin').live_grep()<cr>", opts)
 keymap("n", "<leader>b", "<cmd>lua require('telescope.builtin').buffers()<cr>", opts)
 keymap("n", "<leader>s", "<cmd>lua require('telescope.builtin').lsp_document_symbols()<cr>", opts)
-
--- TODO: show current function name
--- vim.cmd [[nnoremap <leader>n :echo cfi#format("%s", "")<CR>]]
+keymap("n", "<leader>n", "<cmd>lua require('config.utils').echo_current_function_name()<cr>", opts)

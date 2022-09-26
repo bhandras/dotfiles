@@ -1,2 +1,3 @@
-require "options"
 require "plugins"
+-- require "utils"
+require "options"

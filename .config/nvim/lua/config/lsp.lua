@@ -158,7 +158,7 @@ local function setup_diagnostics()
     vim.diagnostic.config(diag_config)
 end
 
-M.on_attach = function(_, bufnr)
+M.on_attach = function(client, bufnr)
     -- Enable completion triggered by <C-X><C-O>
     -- See `:help omnifunc` and `:help ins-completion` for more information.
     vim.api.nvim_buf_set_option(bufnr, "omnifunc", "v:lua.vim.lsp.omnifunc")
@@ -168,6 +168,9 @@ M.on_attach = function(_, bufnr)
     vim.api.nvim_buf_set_option(0, "formatexpr", "v:lua.vim.lsp.formatexpr()")
 
     setup_lsp_keymaps(bufnr)
+
+    -- Attach nvim-navic to the LSP server.
+    require("nvim-navic").attach(client, bufnr)
 end
 
 

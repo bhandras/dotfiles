@@ -18,7 +18,7 @@ function M.setup()
                 {
                     'filename',
                     path = 1,
-                },
+                }, require("nvim-navic").get_location,
             },
             lualine_x = {'encoding', 'filetype'},
             lualine_y = {'progress'},
@@ -31,6 +31,14 @@ function M.setup()
             lualine_x = {},
             lualine_y = {},
             lualine_z = {},
+        },
+        winbar = {
+            lualine_a = {},
+            lualine_b = {},
+            lualine_c = {},
+            lualine_x = {},
+            lualine_y = {},
+            lualine_z = {}
         },
         tabline = {},
         extensions = {},

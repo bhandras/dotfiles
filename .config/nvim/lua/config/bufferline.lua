@@ -12,15 +12,7 @@ function M.setup()
             left_trunc_marker = "",
             right_trunc_marker = "",
 
-            --        offsets = {
-            --            { 
-            --                filetype = "NvimTree",
-            --                text = "", 
-            --                padding = 1,
-            --            },
-            --        },
-
-            show_buffer_icons = false,
+            show_buffer_icons = true,
             show_close_icon = false,
             show_buffer_close_icons = false,
             show_tab_indicators = true,
