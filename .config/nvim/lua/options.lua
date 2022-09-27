@@ -99,6 +99,7 @@ keymap("n", "<leader>8", ":BufferLineGoToBuffer 8<CR>", opts)
 keymap("n", "<leader>9", ":BufferLineGoToBuffer 9<CR>", opts)
 
 keymap("n", "<leader>e", ":NvimTreeToggle<CR>", opts)
+
 keymap("n", "<leader>d", ":TroubleToggle<CR>", opts)
 keymap("n", "<leader>x", ":TroubleToggle lsp_references<CR>", opts)
 
@@ -107,3 +108,15 @@ keymap("n", "<leader>g", "<cmd>lua require('telescope.builtin').live_grep()<cr>"
 keymap("n", "<leader>b", "<cmd>lua require('telescope.builtin').buffers()<cr>", opts)
 keymap("n", "<leader>s", "<cmd>lua require('telescope.builtin').lsp_document_symbols()<cr>", opts)
 keymap("n", "<leader>n", "<cmd>lua require('config.utils').echo_current_function_name()<cr>", opts)
+
+keymap("n", "<leader>dd", "<cmd>lua require'dapui'.toggle()<cr>", opts)
+keymap("n", "<leader>dr", "<cmd>lua require'dap'.run_to_cursor()<cr>", opts)
+keymap("n", "<leader>dh", "<cmd>lua require'dap.ui.widgets'.hover()<cr>", opts)
+keymap("n", "<leader>di", "<cmd>lua require'dap'.step_into()<cr>", opts)
+keymap("n", "<leader>ds", "<cmd>lua require'dap'.step_over()<cr>", opts)
+keymap("n", "<leader>dc", "<cmd>lua require'dap'.continue()<cr>", opts)
+keymap("n", "<leader>db", "<cmd>lua require'dap'.toggle_breakpoint()<cr>", opts)
+keymap("n", "<leader>do", "<cmd>lua require'dap'.step_out()<cr>", opts)
+
+-- File-dependent test runs
+vim.cmd([[autocmd FileType go nnoremap <buffer> <leader>dt :lua require('dap-go').debug_test()<cr>]])

@@ -223,6 +223,18 @@ return packer.startup(function(use)
         end,
     }
 
+    -- Debugging.
+    use {
+        "rcarriga/nvim-dap-ui",
+        requires = {
+            "mfussenegger/nvim-dap",
+            "leoluz/nvim-dap-go",
+        },
+        config = function()
+            require("config.nvim-dap").setup()
+        end,
+    }
+
     -- Automatically set up configuration after cloning packer.nvim.
     -- Must be at the end after all plugins.
     if PACKER_BOOTSTRAP then

@@ -105,7 +105,6 @@ local function setup_lsp_keymaps(bufnr)
 
     bufmap("n", "gd", "<cmd>lua vim.lsp.buf.definition()<CR>")
     bufmap("n", "gD", "<cmd>lua vim.lsp.buf.declaration()<CR>")
-    bufmap("n", "gx", "<cmd>lua vim.lsp.buf.references()<CR>")
     bufmap("n", "gh", "<cmd>lua vim.lsp.buf.hover()<CR>")
     bufmap("n", "gi", "<cmd>lua vim.lsp.buf.implementation()<CR>")
     bufmap("i", "<C-k>", "<cmd>lua vim.lsp.buf.signature_help()<CR>")
