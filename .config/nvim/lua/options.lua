@@ -1,13 +1,3 @@
---[=====[ 
-" set up folding
-set foldmethod=indent
-set nofoldenable
-set foldlevel=99
-nnoremap <space> za
-
-]=====]--
-
-
 vim.opt.mouse = "a"                             -- allow mouse
 
 vim.opt.swapfile = false                        -- creates a swapfile
@@ -19,7 +9,7 @@ vim.opt.fileencoding = "utf-8"                  -- the encoding written to a fil
 
 vim.opt.clipboard = "unnamedplus"               -- allows neovim to access the system clipboard
 
-vim.opt.cmdheight = 2                           -- more space in the neovim command line for displaying messages
+vim.opt.cmdheight = 1                           -- more space in the neovim command line for displaying messages
 vim.opt.pumheight = 10                          -- pop up menu height
 
 vim.opt.completeopt = { "menuone", "noselect" } -- mostly just for cmp
@@ -68,9 +58,6 @@ vim.cmd [[set colorcolumn=81]]
 
 vim.cmd "set whichwrap+=<,>,[,],h,l"
 
--- unset the 'last search ipattern' register by hitting 'return'
-vim.cmd [[nnoremap <CR> :noh<CR><CR>]]
-
 -- show hybrid relative line numbers
 vim.cmd [[set nu rnu]]
 
@@ -88,6 +75,10 @@ vim.cmd [[filetype plugin indent on]]
 local keymap = vim.api.nvim_set_keymap
 local opts = { noremap = true, silent = true }
 
+-- Unset the 'last search ipattern' register by hitting 'return'.
+keymap("n", "<CR>", ":noh<CR><CR>", opts)
+
+-- Select buffer with <leader>1..9
 keymap("n", "<leader>1", ":BufferLineGoToBuffer 1<CR>", opts)
 keymap("n", "<leader>2", ":BufferLineGoToBuffer 2<CR>", opts)
 keymap("n", "<leader>3", ":BufferLineGoToBuffer 3<CR>", opts)
@@ -120,3 +111,10 @@ keymap("n", "<leader>do", "<cmd>lua require'dap'.step_out()<cr>", opts)
 
 -- File-dependent test runs
 vim.cmd([[autocmd FileType go nnoremap <buffer> <leader>dt :lua require('dap-go').debug_test()<cr>]])
+
+-- Use Treesitter for folding.
+vim.opt.foldlevel = 99
+vim.opt.foldmethod = "expr"
+vim.opt.foldexpr = "nvim_treesitter#foldexpr()"
+keymap("n", "<space>", "za", opts)
+
