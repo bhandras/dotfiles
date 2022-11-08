@@ -60,7 +60,7 @@ function M.setup()
             { name = "nvim_lsp_signature_help" },
             { name = "treesitter" },
             { name = "luasnip" },
-            { name = "buffer", max_item_count = 5 },
+            -- { name = "buffer", max_item_count = 5 },
             { name = "path" },
             -- { name = "rg", max_item_count = 8 },
             -- { name = "nvim_lua" },
