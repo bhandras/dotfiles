@@ -174,7 +174,7 @@ end
 
 
 -- For nvim-cmp.
-M.capabilities = require("cmp_nvim_lsp").update_capabilities(
+M.capabilities = require("cmp_nvim_lsp").default_capabilities(
     vim.lsp.protocol.make_client_capabilities()
 )
 
@@ -249,7 +249,7 @@ vim.api.nvim_create_autocmd("BufWritePre", {
     pattern = { "*.go" },
     callback = function()
         organize_imports(3000)
-        vim.lsp.buf.formatting_sync(nil, 3000)
+        vim.lsp.buf.format()
     end,
 })
 
