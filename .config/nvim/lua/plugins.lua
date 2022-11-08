@@ -183,6 +183,13 @@ return packer.startup(function(use)
         end,
     }
 
+    use {
+        'stevearc/aerial.nvim',
+        config = function()
+            require('aerial').setup()
+        end
+    }
+
     -- Fuzzy finder.
     use {
         'nvim-telescope/telescope.nvim',
@@ -192,6 +199,7 @@ return packer.startup(function(use)
         },
         requires = {
             "nvim-lua/plenary.nvim",
+            "nvim-telescope/telescope-file-browser.nvim",
             {
                 "nvim-telescope/telescope-fzf-native.nvim",
                 run = "make"
@@ -201,6 +209,8 @@ return packer.startup(function(use)
         config = function()
             local telescope = require("telescope")
             telescope.load_extension("fzf")
+            telescope.load_extension("file_browser")
+            telescope.load_extension("aerial")
         end,
     }
 
@@ -234,6 +244,7 @@ return packer.startup(function(use)
             require("config.nvim-dap").setup()
         end,
     }
+
 
     -- Automatically set up configuration after cloning packer.nvim.
     -- Must be at the end after all plugins.

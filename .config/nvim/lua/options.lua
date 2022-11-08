@@ -97,7 +97,7 @@ keymap("n", "<leader>x", ":TroubleToggle lsp_references<CR>", opts)
 keymap("n", "<leader>f", "<cmd>lua require('telescope.builtin').find_files()<cr>", opts)
 keymap("n", "<leader>g", "<cmd>lua require('telescope.builtin').live_grep()<cr>", opts)
 keymap("n", "<leader>b", "<cmd>lua require('telescope.builtin').buffers()<cr>", opts)
-keymap("n", "<leader>s", "<cmd>lua require('telescope.builtin').lsp_document_symbols()<cr>", opts)
+keymap("n", "<leader>s", "<cmd>Telescope aerial<cr>", opts)
 keymap("n", "<leader>h", "<cmd>lua require('telescope.builtin').git_bcommits()<cr>", opts)
 keymap("n", "<leader>n", "<cmd>lua require('config.utils').echo_current_function_name()<cr>", opts)
 
