@@ -125,3 +125,11 @@ vim.opt.foldmethod = "expr"
 vim.opt.foldexpr = "nvim_treesitter#foldexpr()"
 keymap("n", "<space>", "za", opts)
 
+-- Use special indenting rules for Go files.
+vim.api.nvim_create_autocmd("FileType", {
+    pattern = "go",
+    callback = function()
+        vim.opt_local.tabstop = 8
+        vim.opt_local.shiftwidth = 8
+    end
+})

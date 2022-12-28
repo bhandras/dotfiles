@@ -214,25 +214,6 @@ return packer.startup(function(use)
         end,
     }
 
-    -- File type specific settings and overrides.
-    use {
-        "nathom/filetype.nvim",
-        config = function()
-            require("filetype").setup({
-                overrides = {
-                    function_extensions = {
-                        ["go"] = function()
-                            vim.bo.filetype = "go"
-                            -- override formatting for Go files.
-                            vim.opt.tabstop = 8
-                            vim.opt.shiftwidth = 8
-                        end,
-                    },
-                },
-            })
-        end,
-    }
-
     -- Debugging.
     use {
         "rcarriga/nvim-dap-ui",
