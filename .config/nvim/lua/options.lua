@@ -6,14 +6,12 @@ vim.opt.backup = false                          -- creates a backup file
 vim.opt.writebackup = false                     -- do not allow editing if a file is being edited by another program
 
 vim.opt.fileencoding = "utf-8"                  -- the encoding written to a file
-
 vim.opt.clipboard = "unnamedplus"               -- allows neovim to access the system clipboard
 
 vim.opt.cmdheight = 1                           -- more space in the neovim command line for displaying messages
 vim.opt.pumheight = 10                          -- pop up menu height
 
 vim.opt.completeopt = { "menuone", "noselect" } -- mostly just for cmp
--- vim.opt.conceallevel = 0                        -- so that `` is visible in markdown files
 
 vim.opt.hlsearch = true                         -- highlight all search pattern matches
 vim.opt.incsearch = true
@@ -109,6 +107,14 @@ keymap("n", "<leader>ds", "<cmd>lua require'dap'.step_over()<cr>", opts)
 keymap("n", "<leader>dc", "<cmd>lua require'dap'.continue()<cr>", opts)
 keymap("n", "<leader>db", "<cmd>lua require'dap'.toggle_breakpoint()<cr>", opts)
 keymap("n", "<leader>do", "<cmd>lua require'dap'.step_out()<cr>", opts)
+
+-- Override yank and paste to use the system clipboard.
+keymap("v", "y", '"*y', opts)
+keymap("n", "y", '"*y', opts)
+keymap("n", "yy", '"*yy', opts)
+
+keymap("n", "p", '"*p', opts)
+keymap("n", "P", '"*P', opts)
 
 -- File-dependent test runs
 vim.cmd([[autocmd FileType go nnoremap <buffer> <leader>dt :lua require('dap-go').debug_test()<cr>]])
