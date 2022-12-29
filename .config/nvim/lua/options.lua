@@ -116,6 +116,11 @@ keymap("n", "yy", '"*yy', opts)
 keymap("n", "p", '"*p', opts)
 keymap("n", "P", '"*P', opts)
 
+keymap("n", "d", '"*d', opts)
+keymap("v", "d", '"*d', opts)
+
+keymap("i", "C-c", "<ESC>", opts)
+
 -- File-dependent test runs
 vim.cmd([[autocmd FileType go nnoremap <buffer> <leader>dt :lua require('dap-go').debug_test()<cr>]])
 
