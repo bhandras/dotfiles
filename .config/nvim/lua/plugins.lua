@@ -144,6 +144,10 @@ return packer.startup(function(use)
     }
 
     use {
+        "github/copilot.vim",
+    }
+
+    use {
         "SmiteshP/nvim-navic",
         wants = {
             "nvim-web-devicons",
