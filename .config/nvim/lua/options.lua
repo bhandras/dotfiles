@@ -109,15 +109,15 @@ keymap("n", "<leader>db", "<cmd>lua require'dap'.toggle_breakpoint()<cr>", opts)
 keymap("n", "<leader>do", "<cmd>lua require'dap'.step_out()<cr>", opts)
 
 -- Override yank and paste to use the system clipboard.
-keymap("v", "y", '"*y', opts)
-keymap("n", "y", '"*y', opts)
-keymap("n", "yy", '"*yy', opts)
+keymap("n", "y", '"+y', opts)
+keymap("v", "y", '"+y', opts)
+keymap("n", "yy", '"+yy', opts)
 
-keymap("n", "p", '"*p', opts)
-keymap("n", "P", '"*P', opts)
+keymap("n", "p", '"+p', opts)
+keymap("n", "P", '"+P', opts)
 
-keymap("n", "d", '"*d', opts)
-keymap("v", "d", '"*d', opts)
+keymap("n", "d", '"+d', opts)
+keymap("v", "d", '"+d', opts)
 
 keymap("i", "C-c", "<ESC>", opts)
 
