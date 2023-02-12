@@ -1,17 +1,17 @@
 font:
   normal:
-    family: "MesloLGS NFM"
+    family: "Hack Nerd Font"
     style: Regular
   bold:
-    family: "MesloLGS NFM"
+    family: "Hack Nerd Font"
     style: Bold
   italic:
-    family: "MesloLGS NFM"
+    family: "Hack Nerd Font"
     style: Italic
   bold_italic:
-    family: "MesloLGS NFM"
+    family: "Hack Nerd Font"
     style: Bold Italic
-  size: 13
+  size: 14
   offset:
     x: 0
     y: 0
@@ -71,7 +71,9 @@ schemes:
       cyan:    '0x8ec07c'
       white:   '0xebdbb2'
        
-colors: *gruvbox_light
+colors: *gruvbox_dark
 
 key_bindings:
-  - { key: F, mods: Control, command: {program: '~/bin/alacritty_cycle_colorscheme.py'} }
+  - { key: F, mods: Control, command: { program: 'sh', args: ['-c', 'python3 ~/bin/alacritty_cycle_colorscheme.py'] } }
+  - { key: Left, mods: Control, chars: "\x1bb" } # one word left
+  - { key: Right, mods: Control, chars: "\x1bf" } # one word right
