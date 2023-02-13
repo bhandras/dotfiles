@@ -1,10 +1,9 @@
 # Float system preferences. Most of these just diable Yabai form resizing them.
 yabai -m rule --add app="^System Settings$" sticky=on layer=above manage=off
-yabai -m rule --add app="^System Information$" sticky=on layer=above manage=off
 yabai -m rule --add app="^Activity Monitor$" sticky=on layer=above manage=off
 yabai -m rule --add app="^Disk Utility$" sticky=on layer=above manage=off
 yabai -m rule --add app="^Finder$" sticky=on layer=above manage=off
-yabai -m rule --add app="^Spotify$" manage=off
+# yabai -m rule --add app="^Spotify$" manage=off
 
 # New window spawns to the right if vertical split, or bottom if horizontal split
 yabai -m config window_placement second_child

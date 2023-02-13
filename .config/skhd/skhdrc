@@ -1,4 +1,4 @@
-# Restart the yabai launch agent
+# Restart the yabai launch agent.
 ctrl + alt + cmd - r : launchctl kickstart -k "gui/${UID}/homebrew.mxcl.yabai"
 
 # Move window between spaces.
@@ -17,7 +17,16 @@ alt - f : yabai -m window --toggle zoom-fullscreen
 alt - return : open -na /Applications/Alacritty.app
 
 # Focus window in bsp mode.
-alt - left: yabai -m window --focus west
-alt - down: yabai -m window --focus south
-alt - up: yabai -m window --focus north
-alt - right: yabai -m window --focus east
+alt - left : yabai -m window --focus west
+alt - down : yabai -m window --focus south
+alt - up : yabai -m window --focus north
+alt - right : yabai -m window --focus east
+
+# Rotate the window tree.
+alt - r : yabai -m space --rotate 90
+
+# Swap windows.
+alt + shift - up : yabai -m window --swap north
+alt + shift - down : yabai -m window --swap south
+alt + shift - left : yabai -m window --swap west
+alt + shift - right : yabai -m window --swap east
