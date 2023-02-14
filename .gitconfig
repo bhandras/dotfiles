@@ -7,33 +7,31 @@
     lg = log --graph --pretty=format:'%Cred%h%Creset -%C(yellow)%d%Creset %s %Cgreen(%cr) %C(bold blue)<%an>%Creset' --abbrev-commit --date=relative
 
 [merge]
-    tool = meld
+    tool = nvimdiff1
     conflictstyle = diff3
+
+[mergetool "smerge"]
+    cmd = smerge mergetool --no-wait \"$BASE\" \"$REMOTE\" \"$LOCAL\" -o \"$MERGED\"
 
 [mergetool "meld"]
     cmd = meld \"$LOCAL\" \"$BASE\" \"$REMOTE\" --output \"$MERGED\" --label \"MERGE (REMOTE BASE MY)\"
-    trustExitCode = false
 
 [mergetool]
-    # do not ask if we want to skip merge
     prompt = false
-
-    # do not create backup *.orig files
     keepBackup = false
+    trustExitCode = false
+    hideResolved = true
 
 [diff]
-    tool = meld
+    tool = nvimdiff
     colorMoved = default
 
 [difftool]
     prompt = false
 
-[difftool "meld"]
-    cmd = meld "$LOCAL" "$REMOTE"
-
 [core]
     pager = env LESS="" delta --paging always
-    editor = vim
+    editor = nvim
 
 [interactive]
     diffFilter = env LESS="" delta --color-only --paging always
@@ -45,4 +43,3 @@
 
 [url "ssh://git@github.com/"]
     insteadOf = https://github.com/
-
