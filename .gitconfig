@@ -7,14 +7,8 @@
     lg = log --graph --pretty=format:'%Cred%h%Creset -%C(yellow)%d%Creset %s %Cgreen(%cr) %C(bold blue)<%an>%Creset' --abbrev-commit --date=relative
 
 [merge]
-    tool = nvimdiff1
+    tool = nvim.diffview 
     conflictstyle = diff3
-
-[mergetool "smerge"]
-    cmd = smerge mergetool --no-wait \"$BASE\" \"$REMOTE\" \"$LOCAL\" -o \"$MERGED\"
-
-[mergetool "meld"]
-    cmd = meld \"$LOCAL\" \"$BASE\" \"$REMOTE\" --output \"$MERGED\" --label \"MERGE (REMOTE BASE MY)\"
 
 [mergetool]
     prompt = false
@@ -22,12 +16,21 @@
     trustExitCode = false
     hideResolved = true
 
+[mergetool "smerge"]
+    cmd = smerge -n mergetool \"$BASE\" \"$REMOTE\" \"$LOCAL\" -o \"$MERGED\"
+
+[mergetool "nvim.diffview"]
+    cmd = nvim -c DiffviewOpen
+
 [diff]
-    tool = nvimdiff
+    tool = nvim.diffview 
     colorMoved = default
 
 [difftool]
     prompt = false
+
+[difftool "nvim.diffview"]
+    cmd = nvim -c DiffviewOpen
 
 [core]
     pager = env LESS="" delta --paging always
