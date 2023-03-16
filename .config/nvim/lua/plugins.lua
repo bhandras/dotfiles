@@ -37,21 +37,68 @@ return packer.startup(function(use)
 
     -- Color schemes.
     use {
-        "morhetz/gruvbox",
+        "ellisonleao/gruvbox.nvim",
         config = function()
-            vim.g.gruvbox_italic = 1
-            vim.g.gruvbox_invert_selection = 0
-            vim.cmd "colorscheme gruvbox"
+            -- local colors = require("gruvbox.palette").colors
+
+            require("gruvbox").setup({
+                undercurl = true,
+                underline = true,
+                bold = true,
+                italic = true,
+                strikethrough = true,
+                invert_selection = false,
+                invert_signs = false,
+                invert_tabline = false,
+                invert_intend_guides = false,
+                inverse = true, -- invert background for search, diffs, statuslines and errors
+                contrast = "soft", -- can be "hard", "soft" or empty string
+                palette_overrides = {},
+                overrides = {
+                    -- TODO: tune these to make diff view more readable.
+                    --
+                    --DiffDelete = { bg = colors.neutral_red, fg = colors.dark0 },
+                    --DiffAdd = { bg = colors.none, fg = colors.none },
+                    --DiffChange = { bg = colors.neutral_aqua, fg = colors.dark0 },
+                    --DiffText = { bg = colors.neutral_yellow, fg = colors.dark0 },
+                },
+                dim_inactive = false,
+                transparent_mode = false,
+            })
         end,
         disable = false,
     }
     use {
-        "NLKNguyen/papercolor-theme",
+        use "rebelot/kanagawa.nvim",
         config = function()
-            vim.cmd "colorscheme PaperColor"
+            require('kanagawa').setup({
+                compile = false,             -- enable compiling the colorscheme
+                undercurl = true,            -- enable undercurls
+                commentStyle = { italic = true },
+                functionStyle = {},
+                keywordStyle = { italic = true},
+                statementStyle = { bold = true },
+                typeStyle = {},
+                transparent = false,         -- do not set background color
+                dimInactive = false,         -- dim inactive window `:h hl-NormalNC`
+                terminalColors = true,       -- define vim.g.terminal_color_{0,17}
+                colors = {                   -- add/modify theme and palette colors
+                    palette = {},
+                    theme = { wave = {}, lotus = {}, dragon = {}, all = {} },
+                },
+                overrides = function(colors) -- add/modify highlights
+                    return {}
+                end,
+                theme = "wave",              -- Load "wave" theme when 'background' option is not set
+                background = {               -- map the value of 'background' option to a theme
+                    dark = "wave",           -- try "dragon" !
+                    light = "lotus"
+                },
+            })
         end,
-        disable = true,
+        disable = false,
     }
+
 
     -- Icons.
     use "kyazdani42/nvim-web-devicons"
@@ -228,6 +275,15 @@ return packer.startup(function(use)
         config = function()
             require("config.nvim-dap").setup()
         end,
+    }
+
+    -- Diff and merge.
+    use {
+        'sindrets/diffview.nvim',
+        requires = 'nvim-lua/plenary.nvim',
+        config = function()
+            require('diffview').setup()
+        end
     }
 
 

@@ -96,7 +96,9 @@ keymap("n", "<leader>f", "<cmd>lua require('telescope.builtin').find_files()<cr>
 keymap("n", "<leader>g", "<cmd>lua require('telescope.builtin').live_grep()<cr>", opts)
 keymap("n", "<leader>b", "<cmd>lua require('telescope.builtin').buffers()<cr>", opts)
 keymap("n", "<leader>s", "<cmd>Telescope aerial<cr>", opts)
-keymap("n", "<leader>h", "<cmd>lua require('telescope.builtin').git_bcommits()<cr>", opts)
+keymap("n", "<leader>df", ":DiffviewFileHistory<cr>", opts)
+keymap("n", "<leader>dx", ":DiffviewClose<cr>", opts)
+keymap("n", "<leader>dt", ":DiffviewToggleFiles<cr>", opts)
 keymap("n", "<leader>n", "<cmd>lua require('config.utils').echo_current_function_name()<cr>", opts)
 
 keymap("n", "<leader>dd", "<cmd>lua require'dapui'.toggle()<cr>", opts)
@@ -138,3 +140,5 @@ vim.api.nvim_create_autocmd("FileType", {
         vim.opt_local.shiftwidth = 8
     end
 })
+
+vim.cmd('colorscheme kanagawa')
