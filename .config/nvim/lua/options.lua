@@ -70,6 +70,8 @@ vim.cmd [[set ruler]]
 
 vim.cmd [[filetype plugin indent on]]
 
+vim.cmd [[set diffopt+=linematch:50]]
+
 local keymap = vim.api.nvim_set_keymap
 local opts = { noremap = true, silent = true }
 
