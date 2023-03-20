@@ -191,6 +191,14 @@ return packer.startup(function(use)
     }
 
     use {
+        "ruifm/gitlinker.nvim",
+        requires = "nvim-lua/plenary.nvim",
+        config = function()
+            require("gitlinker").setup()
+        end,
+    }
+
+    use {
         "github/copilot.vim",
     }
 
