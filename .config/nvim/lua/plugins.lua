@@ -45,7 +45,7 @@ return packer.startup(function(use)
                 undercurl = true,
                 underline = true,
                 bold = true,
-                italic = true,
+                -- italic = true,
                 strikethrough = true,
                 invert_selection = false,
                 invert_signs = false,
@@ -68,8 +68,9 @@ return packer.startup(function(use)
         end,
         disable = false,
     }
+    
     use {
-        use "rebelot/kanagawa.nvim",
+        "rebelot/kanagawa.nvim",
         config = function()
             require('kanagawa').setup({
                 compile = false,             -- enable compiling the colorscheme
@@ -191,6 +192,13 @@ return packer.startup(function(use)
     }
 
     use {
+        "ray-x/lsp_signature.nvim",
+        config = function()
+            require("lsp_signature").setup()
+        end,
+    }
+
+    use {
         "ruifm/gitlinker.nvim",
         requires = "nvim-lua/plenary.nvim",
         config = function()
@@ -264,9 +272,20 @@ return packer.startup(function(use)
                 run = "make"
             },
         },
-        tag = '0.1.0',
+        tag = '0.1.1',
         config = function()
             local telescope = require("telescope")
+            telescope.setup {
+                extensions = {
+                    fzf = {
+                        fuzzy = true,                    -- false will only do exact matching
+                        override_generic_sorter = true,  -- override the generic sorter
+                        override_file_sorter = true,     -- override the file sorter
+                        case_mode = "smart_case",        -- or "ignore_case" or "respect_case"
+                    }
+                }
+            }
+
             telescope.load_extension("fzf")
             telescope.load_extension("file_browser")
             telescope.load_extension("aerial")
@@ -291,6 +310,13 @@ return packer.startup(function(use)
         requires = 'nvim-lua/plenary.nvim',
         config = function()
             require('diffview').setup()
+        end
+    }
+
+    use {
+        "klen/nvim-test",
+        config = function()
+            require('nvim-test').setup()
         end
     }
 
