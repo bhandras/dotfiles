@@ -68,7 +68,7 @@ return packer.startup(function(use)
         end,
         disable = false,
     }
-    
+
     use {
         "rebelot/kanagawa.nvim",
         config = function()
@@ -207,7 +207,7 @@ return packer.startup(function(use)
     }
 
     use {
-        "github/copilot.vim",
+       "github/copilot.vim",
     }
 
     use {
@@ -316,10 +316,33 @@ return packer.startup(function(use)
     use {
         "klen/nvim-test",
         config = function()
-            require('nvim-test').setup()
+            require('nvim-test').setup({})
         end
     }
 
+    -- Notes.
+    use {
+        "nvim-neorg/neorg",
+        config = function()
+            require('neorg').setup {
+                load = {
+                    ["core.defaults"] = {}, -- Loads default behaviour
+                    ["core.concealer"] = {}, -- Adds pretty icons to your documents
+                    ["core.dirman"] = { -- Manages Neorg workspaces
+                        config = {
+                            workspaces = {
+                                scratch = "~/neorg/scratch",
+                                notes = "~/neorg/notes",
+                            },
+                            default_workspace = "scratch",
+                        },
+                    },
+                },
+            }
+        end,
+        run = ":Neorg sync-parsers",
+        requires = "nvim-lua/plenary.nvim",
+    }
 
     -- Automatically set up configuration after cloning packer.nvim.
     -- Must be at the end after all plugins.
