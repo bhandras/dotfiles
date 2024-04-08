@@ -157,10 +157,10 @@ return packer.startup(function(use)
         "hrsh7th/nvim-cmp",
         requires = {
             "hrsh7th/cmp-buffer",
-            "hrsh7th/cmp-path",
-            "hrsh7th/cmp-cmdline",
             "hrsh7th/cmp-nvim-lsp",
             "hrsh7th/cmp-nvim-lua",
+            "hrsh7th/cmp-path",
+            "hrsh7th/cmp-cmdline",
             "L3MON4D3/LuaSnip",
         },
         opt = true,
@@ -207,8 +207,74 @@ return packer.startup(function(use)
     }
 
     use {
-       "github/copilot.vim",
+        "github/copilot.vim",
     }
+
+    --[=====[ 
+    use {
+        "zbirenbaum/copilot.lua",
+        cmd = "Copilot",
+        event = "InsertEnter",
+        config = function()
+            require("copilot").setup({
+                panel = {
+                    enabled = false,
+                    auto_refresh = false,
+                    keymap = {
+                        jump_prev = "[[",
+                        jump_next = "]]",
+                        accept = "<CR>",
+                        refresh = "gr",
+                        open = "<M-CR>"
+                    },
+                    layout = {
+                        position = "bottom", -- | top | left | right
+                        ratio = 0.4
+                    },
+                },
+                suggestion = {
+                    enabled = false,
+                    auto_trigger = true,
+                    debounce = 75,
+                    keymap = {
+                        accept = "<M-l>",
+                        accept_word = false,
+                        accept_line = false,
+                        next = "<M-]>",
+                        prev = "<M-[>",
+                        dismiss = "<C-]>",
+                    },
+                },
+                filetypes = {
+                    yaml = false,
+                    markdown = false,
+                    help = false,
+                    gitcommit = false,
+                    gitrebase = false,
+                    hgcommit = false,
+                    svn = false,
+                    cvs = false,
+                    ["."] = false,
+                },
+                copilot_node_command = 'node', -- Node.js version must be > 18.x
+                server_opts_overrides = {},
+            })
+        end,
+    }
+
+    use {
+        "zbirenbaum/copilot-cmp",
+        after = {
+            "copilot.lua",
+        },
+        requires = {
+            "hrsh7th/nvim-cmp",
+        },
+        config = function()
+            require("copilot_cmp").setup()
+        end,
+    }
+    --]=====]
 
     use {
         "SmiteshP/nvim-navic",
@@ -272,7 +338,7 @@ return packer.startup(function(use)
                 run = "make"
             },
         },
-        tag = '0.1.1',
+        -- tag = '0.1.1',
         config = function()
             local telescope = require("telescope")
             telescope.setup {
@@ -297,6 +363,7 @@ return packer.startup(function(use)
         "rcarriga/nvim-dap-ui",
         requires = {
             "mfussenegger/nvim-dap",
+            "nvim-neotest/nvim-nio",
             "leoluz/nvim-dap-go",
         },
         config = function()

@@ -151,3 +151,17 @@ vim.api.nvim_create_autocmd('LspAttach', {
 })
 
 vim.cmd('colorscheme kanagawa')
+
+function GitBlameDiff()
+    local current_line = vim.api.nvim_win_get_cursor(0)[1]
+    local current_file = vim.fn.expand("%:p")
+    local blame_cmd_output = vim.fn.system("git blame -L " .. current_line .. "," .. current_line .. " --incremental " .. current_file)
+    local commit_hash = blame_cmd_output:match("(%w+) %d+ %d+")
+
+    if commit_hash then
+        local parent_commit_hash = vim.fn.system("git rev-parse " .. commit_hash .. "^")
+        vim.cmd("DiffviewOpen " .. parent_commit_hash:sub(1, -2) .. ".." .. commit_hash)
+    else
+        print("Failed to get commit hash")
+    end
+end

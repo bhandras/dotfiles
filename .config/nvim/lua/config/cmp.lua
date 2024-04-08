@@ -45,23 +45,29 @@ function M.setup()
         sorting = {
             priority_weight = 1,
             comparators = {
+                -- require("copilot_cmp.comparators").prioritize,
+
+                -- Below is the default comparitor list and order for nvim-cmp
+                compare.offset,
+                -- cmp.config.compare.scopes, --this is commented in nvim-cmp too
+                compare.exact,
                 compare.score,
---                compare.exact,
---                compare.kind,
---                compare.recently_used,
---                compare.offset,
---                compare.sort_text,
---                compare.length,
---                compare.order,
+                compare.recently_used,
+                compare.locality,
+                compare.kind,
+                compare.sort_text,
+                compare.length,
+                compare.order,
             },
         },
         sources = {
+            { name = "copilot" },
             { name = "nvim_lsp", max_item_count = 15 },
             { name = "nvim_lsp_signature_help" },
             { name = "treesitter" },
-            { name = "luasnip" },
-            -- { name = "buffer", max_item_count = 5 },
             { name = "path" },
+            -- { name = "luasnip" },
+            -- { name = "buffer", max_item_count = 5 },
             -- { name = "rg", max_item_count = 8 },
             -- { name = "nvim_lua" },
         },
