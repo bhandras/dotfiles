@@ -98,6 +98,9 @@ vim.cmd [[xnoremap p pgvy]]
 
 vim.keymap.set('i', 'C-c', '<ESC>')
 
+-- Unset the 'last search ipattern' register by hitting 'return'.
+vim.keymap.set('n', '<CR>', ':noh<CR><CR>')
+
 -- Diagnostic keymaps
 vim.keymap.set('n', '[d', vim.diagnostic.goto_prev, { desc = 'Go to previous [D]iagnostic message' })
 vim.keymap.set('n', ']d', vim.diagnostic.goto_next, { desc = 'Go to next [D]iagnostic message' })
@@ -145,7 +148,6 @@ vim.opt.rtp:prepend(lazypath)
 require('lazy').setup({
   { -- Detect tabstop and shiftwidth automatically
     'tpope/vim-sleuth',
-    opts = {},
   },
 
   { -- "gc" to comment visual regions/lines
@@ -301,12 +303,25 @@ require('lazy').setup({
             vim.keymap.set('n', keys, func, { buffer = event.buf, desc = 'LSP: ' .. desc })
           end
 
+          local document_symbols = function()
+            require('telescope.builtin').lsp_document_symbols { symbol_width = 50 }
+          end
+
+          local workspace_symbols = function()
+            require('telescope.builtin').lsp_workspace_symbols {
+              fname_width = 0.3,
+              symbol_width = 0.5,
+              symbol_type_width = 0.2,
+              path_display = { 'smart' },
+            }
+          end
+
           map('gd', require('telescope.builtin').lsp_definitions, '[G]oto [D]efinition')
           map('gr', require('telescope.builtin').lsp_references, '[G]oto [R]eferences')
           map('gI', require('telescope.builtin').lsp_implementations, '[G]oto [I]mplementation')
           map('<leader>D', require('telescope.builtin').lsp_type_definitions, 'Type [D]efinition')
-          map('<leader>s', require('telescope.builtin').lsp_document_symbols, 'Document [S]ymbols')
-          map('<leader>ws', require('telescope.builtin').lsp_dynamic_workspace_symbols, '[W]orkspace [S]ymbols')
+          map('<leader>ds', document_symbols, 'Document [S]ymbols')
+          map('<leader>ws', workspace_symbols, '[W]orkspace [S]ymbols')
           map('<leader>rn', vim.lsp.buf.rename, '[R]e[n]ame')
           map('<leader>ca', vim.lsp.buf.code_action, '[C]ode [A]ction')
           map('gh', vim.lsp.buf.hover, 'Hover Documentation')
