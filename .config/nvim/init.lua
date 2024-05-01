@@ -11,7 +11,6 @@ vim.g.maplocalleader = ' '
 
 -- Set to true if you have a Nerd Font installed and selected in the terminal
 vim.g.have_nerd_font = true
-
 -- [[ Setting options ]]
 -- See `:help vim.opt`
 --  For more options, you can see `:help option-list`
@@ -97,6 +96,7 @@ vim.keymap.set('v', 'd', '"+d')
 vim.cmd [[xnoremap p pgvy]]
 
 vim.keymap.set('i', 'C-c', '<ESC>')
+vim.keymap.set('i', '<ESC>', '<C-c>')
 
 -- Unset the 'last search ipattern' register by hitting 'return'.
 vim.keymap.set('n', '<CR>', ':noh<CR><CR>')
@@ -113,7 +113,7 @@ vim.keymap.set('n', '<leader>q', vim.diagnostic.setloclist, { desc = 'Open diagn
 --
 -- NOTE: This won't work in all terminal emulators/tmux/etc. Try your own mapping
 -- or just use <C-\><C-n> to exit terminal mode
-vim.keymap.set('t', '<Esc><Esc>', '<C-\\><C-n>', { desc = 'Exit terminal mode' })
+-- vim.keymap.set('t', '<Esc><Esc>', '<C-\\><C-n>', { desc = 'Exit terminal mode' })
 
 --  See `:help wincmd` for a list of all window commands
 vim.keymap.set('n', '<C-h>', '<C-w><C-h>', { desc = 'Move focus to the left window' })
@@ -365,10 +365,12 @@ require('lazy').setup({
       capabilities = vim.tbl_deep_extend('force', capabilities, require('cmp_nvim_lsp').default_capabilities())
 
       -- Enable the following language servers
+      -- local cmd = { 'gopls', '-logfile=/tmp/gopls.log', '-rpc.trace' }
       local servers = {
         gopls = {
+          -- cmd = cmd,
           filetypes = { 'go', 'gomod', 'gowork', 'gotmpl' },
-          root_dir = require('lspconfig/util').root_pattern('go.mod', 'go.work', '.git'),
+          root_dir = require('lspconfig/util').root_pattern 'go.mod', -- 'go.work', '.git'),
           single_file_support = true,
           fillstruct = 'gopls',
           settings = {
@@ -807,7 +809,7 @@ require('lazy').setup({
   },
   {
     'sindrets/diffview.nvim',
-    requires = 'nvim-lua/plenary.nvim',
+    dependencies = 'nvim-lua/plenary.nvim',
     config = function()
       require('diffview').setup()
     end,
@@ -823,6 +825,41 @@ require('lazy').setup({
     config = function()
       vim.keymap.set('i', '<C-]>', '<Plug>(copilot-next)', { desc = 'Next Copilot Suggestion' })
       vim.keymap.set('i', '<C-[>', '<Plug>(copilot-prev)', { desc = 'Previous Copilot Suggestion' })
+    end,
+  },
+  {
+    'David-Kunz/gen.nvim',
+    opts = {
+      model = 'llama3', -- The default model to use.
+      host = 'localhost', -- The host running the Ollama service.
+      port = '11434', -- The port on which the Ollama service is listening.
+      quit_map = 'q', -- set keymap for close the response window
+      retry_map = '<c-r>', -- set keymap to re-send the current prompt
+      init = function(options)
+        pcall(io.popen, 'ollama serve > /dev/null 2>&1 &')
+      end,
+      -- Function to initialize Ollama
+      command = function(options)
+        local body = { model = options.model, stream = true }
+        return 'curl --silent --no-buffer -X POST http://' .. options.host .. ':' .. options.port .. '/api/chat -d $body'
+      end,
+      -- The command for the Ollama service. You can use placeholders $prompt, $model and $body (shellescaped).
+      -- This can also be a command string.
+      -- The executed command must return a JSON object with { response, context }
+      -- (context property is optional).
+      -- list_models = '<omitted lua function>', -- Retrieves a list of model names
+      display_mode = 'split', -- The display mode. Can be "float" or "split".
+      show_prompt = false, -- Shows the prompt submitted to Ollama.
+      show_model = false, -- Displays which model you are using at the beginning of your chat session.
+      no_auto_close = false, -- Never closes the window automatically.
+      debug = false, -- Prints errors and the command which is run.
+    },
+  },
+  {
+    'ruifm/gitlinker.nvim',
+    dependencies = 'nvim-lua/plenary.nvim',
+    config = function()
+      require('gitlinker').setup()
     end,
   },
 }, {
@@ -846,3 +883,11 @@ require('lazy').setup({
     },
   },
 })
+
+require('gen').prompts['Elaborate_Text'] = {
+  prompt = 'Elaborate on the following text:\n$text',
+  replace = true,
+}
+
+-- Uncomment to debug LSP.
+-- vim.lsp.set_log_level 'debug'
