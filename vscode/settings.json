@@ -1,0 +1,200 @@
+{
+	"git.openRepositoryInParentFolders": "always",
+	"lldb.suppressUpdateNotifications": true,
+	"go.toolsManagement.autoUpdate": true,
+	"gopls": {
+		"ui.semanticTokens": true
+	},
+	"editor.rulers": [
+		80,
+	],
+	"workbench.colorCustomizations": {
+		"editorRuler.foreground": "#827721",
+		"editor.lineHighlightBackground": "#544c15",
+	},
+	"gitlens.advanced.messages": {
+		"suppressRebaseSwitchToTextWarning": true
+	},
+	"security.workspace.trust.untrustedFiles": "open",
+	"vim.leader": ",",
+	"vim.hlsearch": true,
+	"vim.useSystemClipboard": true,
+	"vim.normalModeKeyBindingsNonRecursive": [
+		{
+			"before": [
+				"<CR>"
+			],
+			"commands": [
+				":noh"
+			]
+		},
+		{
+			"before": [
+				"<leader>",
+				"e"
+			],
+			"commands": [
+				"workbench.action.toggleSidebarVisibility"
+			]
+		},
+		{
+			"before": [
+				"<leader>",
+				"s",
+				"f"
+			],
+			"commands": [
+				"find-it-faster.findFiles"
+			]
+		},
+		{
+			"before": [
+				"<leader>",
+				"s",
+				"g"
+			],
+			"commands": [
+				"find-it-faster.findWithinFiles"
+			]
+		},
+		{
+			"before": [
+				"<leader>",
+				"d",
+				"s"
+			],
+			"commands": [
+				"workbench.action.gotoSymbol"
+			]
+		},
+		{
+			"before": [
+				"<leader>",
+				"d"
+			],
+			"commands": [
+				"workbench.actions.view.problems"
+			]
+		},
+		{
+			"before": [
+				"]",
+				"d"
+			],
+			"commands": [
+				"editor.action.marker.nextInFiles"
+			]
+		},
+		{
+			"before": [
+				"[",
+				"d"
+			],
+			"commands": [
+				"editor.action.marker.prevInFiles"
+			]
+		},
+		{
+			"before": [
+				"<leader>",
+				"x"
+			],
+			"commands": [
+				"editor.action.referenceSearch.trigger"
+			]
+		},
+		{
+			"before": [
+				"<leader>",
+				"g",
+				"h"
+			],
+			"commands": [
+				"editor.action.showHover"
+			]
+		},
+		{
+			"before": [
+				"<leader>",
+				"1"
+			],
+			"commands": [
+				"workbench.action.openEditorAtIndex1"
+			]
+		},
+		{
+			"before": [
+				"<leader>",
+				"2"
+			],
+			"commands": [
+				"workbench.action.openEditorAtIndex2"
+			]
+		},
+		{
+			"before": [
+				"<leader>",
+				"3"
+			],
+			"commands": [
+				"workbench.action.openEditorAtIndex3"
+			]
+		},
+		{
+			"before": [
+				"<leader>",
+				"4"
+			],
+			"commands": [
+				"workbench.action.openEditorAtIndex4"
+			]
+		},
+		{
+			"before": [
+				"<leader>",
+				"5"
+			],
+			"commands": [
+				"workbench.action.openEditorAtIndex5"
+			]
+		},
+		{
+			"before": [
+				"<leader>",
+				"6"
+			],
+			"commands": [
+				"workbench.action.openEditorAtIndex6"
+			]
+		},
+		{
+			"before": [
+				"<leader>",
+				"7"
+			],
+			"commands": [
+				"workbench.action.openEditorAtIndex7"
+			]
+		},
+		{
+			"before": [
+				"<leader>",
+				"8"
+			],
+			"commands": [
+				"workbench.action.openEditorAtIndex8"
+			]
+		},
+		{
+			"before": [
+				"<leader>",
+				"9"
+			],
+			"commands": [
+				"workbench.action.openEditorAtIndex9"
+			]
+		}
+	],
+	"workbench.colorTheme": "Ayu Modern",
+	"workbench.iconTheme": "ayu"
+}
