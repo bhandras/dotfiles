@@ -856,6 +856,33 @@ require('lazy').setup({
     },
   },
   {
+    'vhyrro/luarocks.nvim',
+    priority = 1000,
+    config = true,
+  },
+  {
+    'nvim-neorg/neorg',
+    dependencies = 'luarocks.nvim',
+    lazy = false,
+    config = function()
+      require('neorg').setup {
+        load = {
+          ['core.defaults'] = {}, -- Loads default behaviour
+          ['core.concealer'] = {}, -- Adds pretty icons to your documents
+          ['core.dirman'] = { -- Manages Neorg workspaces
+            config = {
+              workspaces = {
+                scratch = '~/neorg/scratch',
+                notes = '~/neorg/notes',
+              },
+              default_workspace = 'scratch',
+            },
+          },
+        },
+      }
+    end,
+  },
+  {
     'ruifm/gitlinker.nvim',
     dependencies = 'nvim-lua/plenary.nvim',
     config = function()
