@@ -883,6 +883,25 @@ require('lazy').setup({
     end,
   },
   {
+    'nvim-neotest/neotest',
+    dependencies = {
+      'nvim-neotest/nvim-nio',
+      'nvim-lua/plenary.nvim',
+      'antoinemadec/FixCursorHold.nvim',
+      'nvim-treesitter/nvim-treesitter',
+      'fredrikaverpil/neotest-golang', -- Installation
+    },
+    config = function()
+      require('neotest').setup {
+        adapters = {
+          require 'neotest-golang', -- Registration
+        },
+      }
+      vim.keymap.set('n', '<leader>nt', ':Neotest summary toggle<CR>', { desc = '[N]eotest [T]oggle Summary' })
+      vim.keymap.set('n', '<leader>no', ':Neotest output-panel toggle<CR>', { desc = '[N]eotest Toggle [O]utput Panel' })
+    end,
+  },
+  {
     'ruifm/gitlinker.nvim',
     dependencies = 'nvim-lua/plenary.nvim',
     config = function()
