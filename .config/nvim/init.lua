@@ -785,7 +785,7 @@ require('lazy').setup({
       }
 
       vim.keymap.set('n', '<leader>t', ':TroubleToggle<CR>', { desc = '[T]oggle Diagnostics' })
-      vim.keymap.set('n', '<leader>x', ':TroubleToggle lsp_references<CR>', { desc = 'Toggle [R]eferences' })
+      vim.keymap.set('n', '<leader>x', ':Trouble lsp_references toggle<CR>', { desc = 'Toggle [R]eferences' })
     end,
   },
   {
