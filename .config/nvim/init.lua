@@ -784,8 +784,9 @@ require('lazy').setup({
         use_diagnostic_signs = true,
       }
 
-      vim.keymap.set('n', '<leader>t', ':TroubleToggle<CR>', { desc = '[T]oggle Diagnostics' })
-      vim.keymap.set('n', '<leader>x', ':Trouble lsp_references toggle<CR>', { desc = 'Toggle [R]eferences' })
+      vim.keymap.set('n', '<leader>d', ':Trouble diagnostics toggle focus=true<CR>', { desc = '[T]oggle Diagnostics' })
+      vim.keymap.set('n', '<leader>x', ':Trouble lsp_references toggle focus=true<CR>', { desc = 'Toggle [R]eferences' })
+      vim.keymap.set('n', '<leader>s', ':Trouble symbols toggle focus=true<CR>', { desc = 'Toggle [R]eferences' })
     end,
   },
   {
