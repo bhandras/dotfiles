@@ -135,6 +135,11 @@ vim.api.nvim_create_autocmd('TextYankPost', {
   end,
 })
 
+vim.api.nvim_create_autocmd({ 'BufRead', 'BufNewFile' }, {
+  pattern = '*.conf',
+  command = 'set filetype=dosini',
+})
+
 -- [[ Install `lazy.nvim` plugin manager ]]
 --    See `:help lazy.nvim.txt` or https://github.com/folke/lazy.nvim for more info
 local lazypath = vim.fn.stdpath 'data' .. '/lazy/lazy.nvim'
@@ -364,7 +369,6 @@ require('lazy').setup({
                 tidy = true,
               },
               analyses = {
-                fieldalignment = true,
                 unusedparams = true,
                 fillstruct = true,
                 nilness = true,
