@@ -1,0 +1,40 @@
+{
+  "hooks": {
+    "Notification": [
+      {
+        "matcher": "",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "~/.claude/notify-enhanced.sh 'Claude has a notification for you' default"
+          }
+        ]
+      }
+    ],
+    "Stop": [
+      {
+        "matcher": "",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "~/.claude/notify-enhanced.sh 'Claude has finished responding' Submarine"
+          }
+        ]
+      }
+    ],
+    "SubagentStop": [
+      {
+        "matcher": "",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "~/.claude/notify-enhanced.sh 'Subagent task completed' default"
+          }
+        ]
+      }
+    ]
+  },
+  "feedbackSurveyState": {
+    "lastShownTime": 1754002857566
+  }
+}
