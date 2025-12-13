@@ -5,6 +5,22 @@ vim.g.mapleader = ','
 vim.g.maplocalleader = ' '
 vim.g.have_nerd_font = true
 
+-- Silence noisy startup deprecation warnings from third-party plugins.
+do
+  local deprecate = vim.deprecate
+  vim.deprecate = function(name, alternative, version, plugin, backtrace)
+    if
+      name == 'vim.tbl_add_reverse_lookup'
+      or (type(name) == 'string' and name:match('vim%.tbl_add_reverse_lookup'))
+      or name == 'vim.tbl_flatten'
+      or (type(name) == 'string' and name:match('vim%.tbl_flatten'))
+    then
+      return
+    end
+    return deprecate(name, alternative, version, plugin, backtrace)
+  end
+end
+
 -- Core UI/UX tweaks carried over from the old config.
 vim.opt.number = true
 vim.opt.mouse = 'a'
@@ -164,9 +180,222 @@ require('gitsigns').setup({
 })
 require('which-key').setup()
 
+local function lsp_symbol_kind_prefix(symbol_kind)
+  local kind = symbol_kind or ''
+
+  if vim.g.have_nerd_font then
+    -- Match the `blink.cmp` icon set for consistent UI.
+    local icons = {
+      Text = '󰉿',
+      Method = '󰊕',
+      Function = '󰊕',
+      Constructor = '󰒓',
+
+      Field = '󰜢',
+      Variable = '󰆦',
+      Property = '󰖷',
+
+      Class = '󱡠',
+      Interface = '󱡠',
+      Struct = '󱡠',
+      Module = '󰅩',
+
+      Unit = '󰪚',
+      Value = '󰦨',
+      Enum = '󰦨',
+      EnumMember = '󰦨',
+
+      Keyword = '󰻾',
+      Constant = '󰏿',
+
+      Snippet = '󱄽',
+      Color = '󰏘',
+      File = '󰈔',
+      Reference = '󰬲',
+      Folder = '󰉋',
+      Event = '󱐋',
+      Operator = '󰪚',
+      TypeParameter = '󰬛',
+    }
+
+    -- LSP/telescope kinds typically come in TitleCase (e.g. "Method", "Struct").
+    -- Some servers may send lowercase; normalize by trying a few forms.
+    local title_kind = kind:gsub('^%l', string.upper)
+    return icons[kind] or icons[title_kind] or icons[kind:lower():gsub('^%l', string.upper)] or '󰉿'
+  end
+
+  local lower_kind = kind:lower()
+  local letters = {
+    class = 'c',
+    constant = 'k',
+    constructor = 'n',
+    enum = 'e',
+    enummember = 'e',
+    event = 'e',
+    field = 'f',
+    file = 'f',
+    ['function'] = 'f',
+    interface = 'i',
+    key = 'k',
+    method = 'm',
+    module = 'm',
+    namespace = 'n',
+    number = '#',
+    object = 'o',
+    operator = 'o',
+    package = 'p',
+    property = 'p',
+    string = 's',
+    struct = 's',
+    typeparameter = 't',
+    variable = 'v',
+  }
+
+  return letters[lower_kind] or '?'
+end
+
+local function gen_lsp_symbols_entry_with_prefix(opts)
+  opts = opts or {}
+
+  local entry_display = require('telescope.pickers.entry_display')
+  local make_entry = require('telescope.make_entry')
+  local utils = require('telescope.utils')
+
+  local hidden = opts.hide_path or utils.is_path_hidden(opts)
+
+  local display_items = {
+    { width = 1 },
+    { remaining = true },
+  }
+  if not hidden then
+    table.insert(display_items, 1, { width = vim.F.if_nil(opts.fname_width, 30) })
+  end
+
+  local displayer = entry_display.create({
+    separator = ' ',
+    hl_chars = { ['['] = 'TelescopeBorder', [']'] = 'TelescopeBorder' },
+    items = display_items,
+  })
+
+  local make_display = function(entry)
+    local icon = lsp_symbol_kind_prefix(entry.symbol_type)
+    if opts.continuous then
+      if hidden then
+        return string.format('%s %s', icon, entry.symbol_name)
+      end
+      local display_path = utils.transform_path(opts, entry.filename)
+      return string.format('%s  %s %s', display_path, icon, entry.symbol_name)
+    end
+
+    if hidden then
+      return displayer({
+        { icon, 'TelescopeResultsComment' },
+        entry.symbol_name,
+      })
+    end
+
+    local display_path, path_style = utils.transform_path(opts, entry.filename)
+    local path_hl = path_style
+    if type(path_style) == 'table' then
+      path_hl = function()
+        return path_style
+      end
+    end
+    return displayer({
+      {
+        display_path,
+        path_hl,
+      },
+      { icon, 'TelescopeResultsComment' },
+      entry.symbol_name,
+    })
+  end
+
+  return function(entry)
+    local filename = vim.F.if_nil(entry.filename, entry.bufnr and vim.api.nvim_buf_get_name(entry.bufnr) or nil)
+    local symbol_msg = entry.text or ''
+    local symbol_type, symbol_name = symbol_msg:match('%[(.+)%]%s+(.*)')
+    symbol_type = symbol_type or 'Unknown'
+    symbol_name = symbol_name or symbol_msg
+    if opts.strip_container then
+      symbol_name = vim.trim(symbol_name:gsub('%s+in%s+.+$', ''))
+    end
+
+    local ordinal = symbol_name .. ' ' .. symbol_type
+    if not hidden and filename then
+      ordinal = filename .. ' ' .. ordinal
+    end
+
+    return make_entry.set_default_entry_mt({
+      value = entry,
+      ordinal = ordinal,
+      display = make_display,
+
+      filename = filename,
+      lnum = entry.lnum,
+      col = entry.col,
+      symbol_name = symbol_name,
+      symbol_type = symbol_type,
+      start = entry.start,
+      finish = entry.finish,
+    }, opts)
+  end
+end
+
+local function gen_vimgrep_entry_continuous(opts)
+  opts = opts or {}
+  local make_entry = require('telescope.make_entry')
+  local utils = require('telescope.utils')
+
+  local original = make_entry.gen_from_vimgrep(opts)
+  return function(entry)
+    local item = original(entry)
+    local filename = item.filename or item.path or ''
+    local display_path = utils.transform_path(opts, filename)
+    local lnum = item.lnum or 0
+    local col = item.col or 0
+    local text = item.text or ''
+    item.display = string.format('%s:%d:%d  %s', display_path, lnum, col, text)
+    return item
+  end
+end
+
 require('telescope').setup({
-  defaults = {},
-  extensions = { ['ui-select'] = require('telescope.themes').get_dropdown() },
+  defaults = {
+    layout_strategy = 'vertical',
+    layout_config = {
+      prompt_position = 'bottom',
+      preview_height = 0.6,
+      width = 0.95,
+      height = 0.9,
+    },
+  },
+  pickers = {
+    lsp_document_symbols = {
+      entry_maker = gen_lsp_symbols_entry_with_prefix({ hide_path = true }),
+    },
+    lsp_dynamic_workspace_symbols = {
+      entry_maker = gen_lsp_symbols_entry_with_prefix({ strip_container = true, continuous = true }),
+      layout_strategy = 'vertical',
+      layout_config = {
+        prompt_position = 'bottom',
+        preview_height = 0.55,
+        width = 0.95,
+        height = 0.9,
+      },
+    },
+    live_grep = {
+      entry_maker = gen_vimgrep_entry_continuous({}),
+      layout_strategy = 'vertical',
+      layout_config = {
+        prompt_position = 'bottom',
+        preview_height = 0.6,
+        width = 0.95,
+        height = 0.9,
+      },
+    },
+  },
+  extensions = { ['ui-select'] = require('telescope.themes').get_dropdown({ prompt_position = 'bottom' }) },
 })
 pcall(require('telescope').load_extension, 'fzf')
 pcall(require('telescope').load_extension, 'ui-select')
@@ -183,6 +412,7 @@ vim.keymap.set('n', '<leader>/', function()
   telescope_builtin.current_buffer_fuzzy_find(require('telescope.themes').get_dropdown({
     winblend = 10,
     previewer = false,
+    prompt_position = 'bottom',
   }))
 end, { desc = 'Fuzzy search buffer' })
 
@@ -196,9 +426,10 @@ mini_statusline.section_location = function()
   return '%2l:%-2v'
 end
 
+local in_git_session = vim.env.GIT_DIR ~= nil or vim.env.GIT_INDEX_FILE ~= nil
 require('nvim-treesitter.configs').setup({
-  ensure_installed = { 'bash', 'c', 'go', 'python', 'html', 'lua', 'luadoc', 'markdown', 'vim', 'vimdoc' },
-  auto_install = true,
+  ensure_installed = { 'bash', 'c', 'gitcommit', 'go', 'python', 'html', 'lua', 'luadoc', 'markdown', 'vim', 'vimdoc' },
+  auto_install = not in_git_session,
   highlight = { enable = true, additional_vim_regex_highlighting = { 'ruby' } },
   indent = { enable = true, disable = { 'ruby' } },
 })
@@ -392,7 +623,15 @@ vim.api.nvim_create_autocmd('FileType', {
 
 local notify_original = vim.notify
 vim.notify = function(msg, ...)
-  if msg and (msg:match('position_encoding param is required') or msg:match('Defaulting to position encoding of the first client') or msg:match('multiple different client offset_encodings')) then
+  if
+    msg
+    and (
+      msg:match('position_encoding param is required')
+      or msg:match('Defaulting to position encoding of the first client')
+      or msg:match('multiple different client offset_encodings')
+      or msg:match('vim%.tbl_add_reverse_lookup is deprecated')
+    )
+  then
     return
   end
   return notify_original(msg, ...)
@@ -530,6 +769,30 @@ vim.api.nvim_create_autocmd('LspAttach', {
     map('<leader>f', function()
       vim.lsp.buf.format({ async = true })
     end, '[F]ormat')
+
+    -- Format on save for Go buffers (gofmt via gopls).
+    if vim.bo[event.buf].filetype == 'go' then
+      local client_id = event.data and event.data.client_id or nil
+      local client = client_id and vim.lsp.get_client_by_id(client_id) or nil
+      if client and client.server_capabilities and client.server_capabilities.documentFormattingProvider then
+        local format_augroup = vim.api.nvim_create_augroup('lsp-format-on-save', { clear = false })
+        vim.api.nvim_clear_autocmds({ group = format_augroup, buffer = event.buf })
+        vim.api.nvim_create_autocmd('BufWritePre', {
+          group = format_augroup,
+          buffer = event.buf,
+          callback = function()
+            vim.lsp.buf.format({
+              bufnr = event.buf,
+              timeout_ms = 2000,
+              filter = function(format_client)
+                return format_client.name == 'gopls'
+              end,
+            })
+          end,
+          desc = 'LSP: gofmt on save (gopls)',
+        })
+      end
+    end
 
     -- The following two autocommands are used to highlight references of the
     -- word under your cursor when your cursor rests there for a little while.
