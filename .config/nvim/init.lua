@@ -14,6 +14,9 @@ do
       or (type(name) == 'string' and name:match('vim%.tbl_add_reverse_lookup'))
       or name == 'vim.tbl_flatten'
       or (type(name) == 'string' and name:match('vim%.tbl_flatten'))
+      or name == 'vim.lsp.start_client()'
+      or name == 'vim.lsp.start_client'
+      or (type(name) == 'string' and name:match('vim%.lsp%.start_client'))
     then
       return
     end
@@ -428,12 +431,25 @@ end
 
 local in_git_session = vim.env.GIT_DIR ~= nil or vim.env.GIT_INDEX_FILE ~= nil
 require('nvim-treesitter.configs').setup({
-  ensure_installed = { 'bash', 'c', 'gitcommit', 'go', 'python', 'html', 'lua', 'luadoc', 'markdown', 'vim', 'vimdoc' },
+  ensure_installed = {
+    'bash',
+    'c',
+    'gitcommit',
+    'git_rebase',
+    'go',
+    'python',
+    'html',
+    'lua',
+    'luadoc',
+    'markdown',
+    'vim',
+    'vimdoc',
+  },
   auto_install = not in_git_session,
   highlight = { enable = true, additional_vim_regex_highlighting = { 'ruby' } },
   indent = { enable = true, disable = { 'ruby' } },
 })
-require('nvim-treesitter.install').prefer_git = true
+require('nvim-treesitter.install').prefer_git = not in_git_session
 
 require('nvim-tree').setup({
   update_focused_file = { enable = true, update_cwd = true },
