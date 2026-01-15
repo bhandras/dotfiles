@@ -56,29 +56,45 @@ gh api --paginate repos/{owner}/{repo}/pulls/<PR>/comments \
 ```
 
 3) Fix review notes commit-by-commit
-- For each comment batch:
-  - implement fix
+- For each comment:
+  - identify the target commit (use `commit_id` from the review payload, or
+    `git log -- <file>`/`git blame`)
+  - start `git rebase -i <base>` and mark the target commit `edit`
+  - apply the fix
+  - run validation **before** committing (normally `make lint`, `make unit`,
+    and any relevant itests)
+  - if the change affects scripts or build tooling, lint/unit may need to be
+    omitted; ask the user and follow their direction
   - `git add <files>`
-  - `git commit -m "pkg: <short change>"`
+  - `git commit -m "! <short change>"`
+  - continue the rebase, resolving conflicts if needed
   - repeat until all notes addressed
-- If amending, use `git commit --amend` and then
-  `git push --force-with-lease`
 - Ensure fixes land in the commit the reviewer commented on:
-  - Identify `commit_id` from the review comment payload.
-  - Use `git rebase -i <base>` and `git commit --amend` to update that commit.
-  - Rewrite history as needed and force-push to the branch.
+  - Keep the fix commit directly after the original commit.
   - Confirm the diff for the addressed commit is updated.
 
 4) Test after fixes
 - Run extensive tests after applying fixes to ensure correctness.
 - Prefer `make lint` and relevant unit/integration tests.
+- Run per-fix validation before committing each change.
+- After all fixes, run a final validation pass on the full branch.
 - Note any tests not run in the PR response.
 
-5) Reply to each comment individually
-- Use `in_reply_to` for line comment replies:
-  - `gh api -X POST repos/{owner}/{repo}/pulls/<PR>/comments \
-      -F in_reply_to=<COMMENT_ID> \
-      -F body='Acked; updated to ...'`
+5) Reply to each comment individually (draft replies only)
+- Always create or reuse a **pending review** and attach draft replies to it.
+- Create a pending review (omit `event` to keep it draft):
+  - `gh api -X POST repos/{owner}/{repo}/pulls/<PR>/reviews -F body='Draft replies'`
+- Add a draft reply to the pending review with GraphQL (supports replies):
+  - `gh api graphql -f query='mutation($pullRequestId:ID!,$pullRequestReviewId:ID!,$inReplyTo:ID!,$body:String!){addPullRequestReviewComment(input:{pullRequestId:$pullRequestId,pullRequestReviewId:$pullRequestReviewId,inReplyTo:$inReplyTo,body:$body}){comment{url body}}}' \
+      -f pullRequestId=<PR_NODE_ID> \
+      -f pullRequestReviewId=<REVIEW_NODE_ID> \
+      -f inReplyTo=<COMMENT_NODE_ID> \
+      -f body='Acked; updated to ...'`
+- If a pending review already exists, reuse it; do **not** submit the review.
+- Reply content: describe **what changed and how**, without referencing commit
+  hashes, rebases, or internal workflow mechanics. Example:
+  - “Fixed by changing the default case to return `FailedState` with an explicit
+    reason, so we fail closed on unexpected statuses.”
 
 ## Comment Formatting Rules
 
