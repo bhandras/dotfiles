@@ -99,6 +99,8 @@ gh api --paginate repos/{owner}/{repo}/pulls/<PR>/comments \
 ## Comment Formatting Rules
 
 - Use real newlines, not literal `\n`.
+- Do not manually hard-wrap paragraphs to 72/80 columns. GitHub renders and
+  wraps comments/PR descriptions correctly in the UI; keep lines natural.
 - For multi-line replies, prefer a heredoc:
 ```bash
 gh api -X POST repos/{owner}/{repo}/pulls/<PR>/comments \
@@ -108,6 +110,12 @@ Applied fix:
 - updated X
 - refactored Y
 EOF
+```
+- If using a file, prefer `-F body=@file` rather than shell string
+  interpolation, to preserve newlines safely:
+```bash
+gh api -X POST repos/{owner}/{repo}/issues/<PR>/comments \
+  -F body=@/tmp/comment.md
 ```
 - Keep replies concise and specific to the change made.
 
