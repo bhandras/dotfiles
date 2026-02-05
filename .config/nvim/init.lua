@@ -117,6 +117,8 @@ local plugins = {
   { src = 'https://github.com/mason-org/mason-lspconfig.nvim' },
   { src = 'https://github.com/WhoIsSethDaniel/mason-tool-installer.nvim' },
   { src = 'https://github.com/saghen/blink.cmp', version = vim.version.range('*') },
+  { src = 'https://github.com/rafikdraoui/jj-diffconflicts' },
+  { src = 'https://github.com/NeogitOrg/neogit' },
 }
 if vim.fn.executable('make') == 1 then
   table.insert(plugins, { src = 'https://github.com/nvim-telescope/telescope-fzf-native.nvim' })
@@ -170,6 +172,21 @@ end
 require('tokyonight').setup({})
 vim.cmd.colorscheme('tokyonight-night')
 vim.cmd.hi('Comment gui=none')
+
+do
+  local function link(from, to)
+    vim.api.nvim_set_hl(0, from, { link = to })
+  end
+
+  link('TelescopeBorder', 'FloatBorder')
+  link('TelescopePromptBorder', 'FloatBorder')
+  link('TelescopeResultsBorder', 'FloatBorder')
+  link('TelescopePreviewBorder', 'FloatBorder')
+  link('TelescopeTitle', 'FloatTitle')
+  link('TelescopePromptTitle', 'FloatTitle')
+  link('TelescopeResultsTitle', 'FloatTitle')
+  link('TelescopePreviewTitle', 'FloatTitle')
+end
 
 require('Comment').setup()
 require('gitsigns').setup({
@@ -368,9 +385,11 @@ require('telescope').setup({
     layout_strategy = 'vertical',
     layout_config = {
       prompt_position = 'bottom',
-      preview_height = 0.6,
-      width = 0.95,
-      height = 0.9,
+      vertical = {
+        preview_height = 0.6,
+        width = 0.95,
+        height = 0.9,
+      },
     },
   },
   pickers = {
@@ -382,9 +401,11 @@ require('telescope').setup({
       layout_strategy = 'vertical',
       layout_config = {
         prompt_position = 'bottom',
-        preview_height = 0.55,
-        width = 0.95,
-        height = 0.9,
+        vertical = {
+          preview_height = 0.55,
+          width = 0.95,
+          height = 0.9,
+        },
       },
     },
     live_grep = {
@@ -392,16 +413,38 @@ require('telescope').setup({
       layout_strategy = 'vertical',
       layout_config = {
         prompt_position = 'bottom',
-        preview_height = 0.6,
-        width = 0.95,
-        height = 0.9,
+        vertical = {
+          preview_height = 0.6,
+          width = 0.95,
+          height = 0.9,
+        },
       },
     },
   },
-  extensions = { ['ui-select'] = require('telescope.themes').get_dropdown({ prompt_position = 'bottom' }) },
+  extensions = {
+    ['ui-select'] = {
+      require('telescope.themes').get_cursor({
+        previewer = false,
+        layout_config = {
+          width = 0.5,
+          height = 0.25,
+        },
+      }),
+    },
+  },
 })
 pcall(require('telescope').load_extension, 'fzf')
 pcall(require('telescope').load_extension, 'ui-select')
+do
+  local telescope_ui_select = vim.ui.select
+  vim.ui.select = function(items, opts, on_choice)
+    opts = opts or {}
+    if opts.kind == 'codeaction' or opts.kind == 'codeactions' then
+      opts.prompt = ''
+    end
+    return telescope_ui_select(items, opts, on_choice)
+  end
+end
 
 local telescope_builtin = require('telescope.builtin')
 vim.keymap.set('n', '<leader>sh', telescope_builtin.help_tags, { desc = '[S]earch [H]elp' })
@@ -509,8 +552,8 @@ for i = 1, 9 do
 end
 
 require('trouble').setup({ use_diagnostic_signs = true })
-vim.keymap.set('n', '<leader>dd', ':TroubleToggle document_diagnostics focus=true<CR>', { desc = '[T]oggle Diagnostics' })
-vim.keymap.set('n', '<leader>x', ':TroubleToggle lsp_references focus=true<CR>', { desc = 'Toggle [R]eferences' })
+vim.keymap.set('n', '<leader>dd', ':Trouble diagnostics toggle focus=true<CR>', { desc = '[T]oggle Diagnostics' })
+vim.keymap.set('n', '<leader>x', ':Trouble lsp_references toggle focus=true<CR>', { desc = 'Toggle [R]eferences' })
 
 require('diffview').setup()
 require('nvim-test').setup({})
@@ -774,12 +817,10 @@ vim.api.nvim_create_autocmd('LspAttach', {
     -- or a suggestion from your LSP for this to activate.
     map('<leader>ca', vim.lsp.buf.code_action, '[C]ode [A]ction')
 
-    -- Opens a popup that displays documentation about the word under your cursor
-    --  See `:help K` for why this keymap.
-    map('K', vim.lsp.buf.hover, 'Hover Documentation')
+    -- Opens a popup that displays documentation about the word under your cursor.
+    map('gh', vim.lsp.buf.hover, 'Hover Documentation')
 
-    -- WARN: This is not Goto Definition, this is Goto Declaration.
-    --  For example, in C this would take you to the header.
+    -- Goto Declaration.
     map('gD', vim.lsp.buf.declaration, '[G]oto [D]eclaration')
 
     map('<leader>f', function()
